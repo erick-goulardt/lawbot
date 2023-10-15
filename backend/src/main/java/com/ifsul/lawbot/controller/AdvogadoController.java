@@ -5,6 +5,7 @@ import com.ifsul.lawbot.domain.dto.CadastrarAdvogadoRequest;
 import com.ifsul.lawbot.domain.dto.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.domain.dto.EditarAdvogadoRequest;
 import com.ifsul.lawbot.domain.dto.ListarAdvogadoRequest;
+import com.ifsul.lawbot.infra.security.HashSenhas;
 import com.ifsul.lawbot.repository.AdvogadoRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,15 @@ public class AdvogadoController {
     @Autowired
     private AdvogadoRepository repository;
 
+    @Autowired
+    private HashSenhas hashSenhas;
+
     @PostMapping
     @Transactional
     public ResponseEntity cadastrar(@RequestBody @Valid CadastrarAdvogadoRequest dados, UriComponentsBuilder uriBuilder){
 
         var advogado = new Advogado(dados);
+        advogado.setSenha(hashSenhas.hash(advogado.getSenha()));
         repository.save(advogado);
 
         var uri = uriBuilder.path("/advogado/{id}").buildAndExpand(advogado.getId()).toUri();

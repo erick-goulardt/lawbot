@@ -1,5 +1,6 @@
-package com.ifsul.lawbot.domain;
+package com.ifsul.lawbot.domain.cliente;
 
+import com.ifsul.lawbot.domain.processo.Processo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

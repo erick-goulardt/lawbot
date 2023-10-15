@@ -1,9 +1,8 @@
-package com.ifsul.lawbot.domain.dto;
+package com.ifsul.lawbot.domain.advogado.dto;
 
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public record EditarAdvogadoRequest(
         @NotNull

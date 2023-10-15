@@ -1,10 +1,10 @@
 package com.ifsul.lawbot.controller;
 
-import com.ifsul.lawbot.domain.Advogado;
-import com.ifsul.lawbot.domain.dto.CadastrarAdvogadoRequest;
-import com.ifsul.lawbot.domain.dto.DetalharAdvogadoRequest;
-import com.ifsul.lawbot.domain.dto.EditarAdvogadoRequest;
-import com.ifsul.lawbot.domain.dto.ListarAdvogadoRequest;
+import com.ifsul.lawbot.domain.advogado.Advogado;
+import com.ifsul.lawbot.domain.advogado.dto.CadastrarAdvogadoRequest;
+import com.ifsul.lawbot.domain.advogado.dto.DetalharAdvogadoRequest;
+import com.ifsul.lawbot.domain.advogado.dto.EditarAdvogadoRequest;
+import com.ifsul.lawbot.domain.advogado.dto.ListarAdvogadoRequest;
 import com.ifsul.lawbot.infra.security.HashSenhas;
 import com.ifsul.lawbot.repository.AdvogadoRepository;
 import jakarta.validation.Valid;

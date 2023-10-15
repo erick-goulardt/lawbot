@@ -1,6 +1,6 @@
-package com.ifsul.lawbot.domain.dto;
+package com.ifsul.lawbot.domain.advogado.dto;
 
-import com.ifsul.lawbot.domain.Advogado;
+import com.ifsul.lawbot.domain.advogado.Advogado;
 
 import java.time.LocalDate;
 

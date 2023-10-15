@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/advogado")
@@ -24,34 +25,43 @@ public class AdvogadoController {
 
     @PostMapping
     @Transactional
-    public void cadastrarAdvogado(@RequestBody @Valid CadastrarAdvogadoRequest dados){
+    public ResponseEntity cadastrar(@RequestBody @Valid CadastrarAdvogadoRequest dados, UriComponentsBuilder uriBuilder){
+
         var advogado = new Advogado(dados);
         repository.save(advogado);
+
+        var uri = uriBuilder.path("/advogado/{id}").buildAndExpand(advogado.getId()).toUri();
+        return ResponseEntity.created(uri).body(new DetalharAdvogadoRequest(advogado));
     }
 
     @GetMapping
-    public Page<ListarAdvogadoRequest> listarAdvogados(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
+    public ResponseEntity<Page<ListarAdvogadoRequest>> listarAdvogados(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
         var page = repository.findAll(paginacao).map(ListarAdvogadoRequest::new);
-        return page;
+        return ResponseEntity.ok(page);
     }
 
     @PutMapping
     @Transactional
-    public void editarAdvogado(@RequestBody @Valid EditarAdvogadoRequest dados){
+    public ResponseEntity editarAdvogado(@RequestBody @Valid EditarAdvogadoRequest dados){
         var advogado = repository.getReferenceById(dados.id());
         advogado.atualizar(dados);
+
+        return ResponseEntity.ok(new DetalharAdvogadoRequest(advogado));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public void deletarAdvogado(@PathVariable Long id){
+    public ResponseEntity deletarAdvogado(@PathVariable Long id){
         var advogado = repository.getReferenceById(id);
         repository.delete(advogado);
+
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public DetalharAdvogadoRequest detalharAdvogado(@PathVariable Long id){
+    public ResponseEntity detalharAdvogado(@PathVariable Long id){
         var advogado = repository.getReferenceById(id);
-        return new DetalharAdvogadoRequest(advogado);
+
+        return ResponseEntity.ok(new DetalharAdvogadoRequest(advogado));
     }
 }

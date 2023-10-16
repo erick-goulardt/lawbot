@@ -1,6 +1,10 @@
 package com.ifsul.lawbot.domain.advogado.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record AutenticarRequest(
-        String email,
+        @NotBlank
+        String login,
+        @NotBlank
         String senha) {
 }

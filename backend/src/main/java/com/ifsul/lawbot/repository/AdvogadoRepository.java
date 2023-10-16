@@ -6,6 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface AdvogadoRepository extends JpaRepository<Advogado, Long> {
 
-    UserDetails findByEmail(String email);
+    UserDetails findByOab(String oab);
 
 }

@@ -11,9 +11,14 @@ import com.ifsul.lawbot.repositories.ChaveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.security.PrivateKey;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AdvogadoService {
@@ -52,9 +57,21 @@ public class AdvogadoService {
 
     }
 
-    public ResponseEntity<Page<ListarAdvogadoRequest>> listarAdvogado(Pageable paginacao){
-        var page = repository.findAll(paginacao).map(ListarAdvogadoRequest::new);
-        return ResponseEntity.ok(page);
+    public List<Advogado> listarAdvogados() {
+        int i = 0;
+        List<Advogado> advogados = repository.findAll();
+        List<Advogado> advogadosDecriptado = new ArrayList<>();
+        for (Advogado advogado : advogados) {
+            Chave chave = advogados.get(i).getChave();
+            advogado.setNome(cript.decriptar(advogados.get(i).getNome(), chave.getChavePrivada()));
+            advogado.setCpf(cript.decriptar(advogados.get(i).getCpf(), chave.getChavePrivada()));
+            advogado.setOab(cript.decriptar(advogados.get(i).getOab(), chave.getChavePrivada()));
+            advogado.setEmail(cript.decriptar(advogados.get(i).getEmail(), chave.getChavePrivada()));
+            advogado.setDataNascimento(advogados.get(i).getDataNascimento());
+            advogadosDecriptado.add(advogado);
+            i++;
+        }
+        return advogadosDecriptado;
     }
 
     public ResponseEntity editarAdvogado(EditarAdvogadoRequest dados){

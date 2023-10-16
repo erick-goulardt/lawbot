@@ -1,10 +1,10 @@
-package com.ifsul.lawbot.security;
+package com.ifsul.lawbot.services;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 @Service
-public class HashSenhas {
+public class HashSenhasService {
 
     private static int workload = 12;
 

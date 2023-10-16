@@ -5,8 +5,9 @@ import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
 import com.ifsul.lawbot.entities.Advogado;
+import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
-import com.ifsul.lawbot.security.HashSenhas;
+import com.ifsul.lawbot.repositories.ChaveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +21,35 @@ public class AdvogadoService {
     @Autowired
     private AdvogadoRepository repository;
 
+    @Autowired
+    private GerarChaveService gerarChaveService;
+
+    @Autowired
+    private CriptografiaService cript;
+
     public ResponseEntity cadastrarAdvogado(CadastrarAdvogadoRequest dados, UriComponentsBuilder uriBuilder){
-        var advogado = new Advogado(dados);
-        advogado.setSenha(HashSenhas.hash(advogado.getSenha()));
+        Advogado advogado = Advogado.builder().dataNascimento(dados.dataNascimento()).senha(HashSenhasService.hash(dados.senha())).build();
+
+        Chave key = gerarChaveService.findKey();
+        advogado.setCpf(
+                cript.encriptar(dados.cpf(), key.getChavePublica())
+        );
+        advogado.setNome(
+                cript.encriptar(dados.nome(), key.getChavePublica())
+        );
+        advogado.setEmail(
+                cript.encriptar(dados.email(), key.getChavePublica())
+        );
+        advogado.setOab(
+                cript.encriptar(dados.oab(), key.getChavePublica())
+        );
+        advogado.setChave(key);
+
         repository.save(advogado);
 
-        var uri = uriBuilder.path("/advogado/{id}").buildAndExpand(advogado.getId()).toUri();
+        var uri = uriBuilder.path("/medicos/{id}").buildAndExpand(advogado.getId()).toUri();
         return ResponseEntity.created(uri).body(new DetalharAdvogadoRequest(advogado));
+
     }
 
     public ResponseEntity<Page<ListarAdvogadoRequest>> listarAdvogado(Pageable paginacao){

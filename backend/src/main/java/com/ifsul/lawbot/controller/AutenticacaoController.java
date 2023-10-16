@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ifsul.lawbot.security.HashSenhas;
+import com.ifsul.lawbot.services.HashSenhasService;
 
 
 @RestController
@@ -24,7 +24,7 @@ public class AutenticacaoController {
     private AuthenticationManager manager;
 
     @Autowired
-    private HashSenhas hashSenhas;
+    private HashSenhasService hashSenhas;
 
     @Autowired
     private TokenService tokenService;

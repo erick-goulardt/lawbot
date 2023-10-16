@@ -6,7 +6,6 @@ import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
 import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.repositories.ClienteRepository;
-import com.ifsul.lawbot.security.HashSenhas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,7 @@ public class ClienteService {
     public ResponseEntity cadastrarCliente(CadastrarClienteRequest dados, UriComponentsBuilder uriBuilder){
 
         var cliente = new Cliente(dados);
-        cliente.setSenha(HashSenhas.hash(cliente.getSenha()));
+        cliente.setSenha(HashSenhasService.hash(cliente.getSenha()));
         repository.save(cliente);
 
         var uri = uriBuilder.path("/cliente/{id}").buildAndExpand(cliente.getId()).toUri();

@@ -3,10 +3,7 @@ package com.ifsul.lawbot.entities;
 import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "advogado")
+@Builder
 public class Advogado implements UserDetails {
 
      @Id
@@ -37,6 +35,10 @@ public class Advogado implements UserDetails {
      @Column(unique = true)
      private String cpf;
      private LocalDate dataNascimento;
+
+     @ManyToOne
+     @JoinColumn(name = "chave_id")
+     private Chave chave;
 
      public Advogado (CadastrarAdvogadoRequest dados){
           this.nome = dados.nome();

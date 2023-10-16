@@ -1,4 +1,4 @@
-package com.ifsul.lawbot.domain.advogado.dto;
+package com.ifsul.lawbot.dto.cliente;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record CadastrarAdvogadoRequest(
+public record CadastrarClienteRequest(
         @NotBlank
         String nome,
         @NotBlank
@@ -15,9 +15,8 @@ public record CadastrarAdvogadoRequest(
         @NotBlank
         String senha,
         @NotBlank
-        String oab,
-        @NotBlank
         String cpf,
         @NotNull
-        LocalDate dataNascimento) {
+        LocalDate dataNascimento
+) {
 }

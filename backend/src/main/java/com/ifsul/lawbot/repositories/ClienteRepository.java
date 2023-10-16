@@ -1,6 +1,6 @@
-package com.ifsul.lawbot.repository;
+package com.ifsul.lawbot.repositories;
 
-import com.ifsul.lawbot.domain.cliente.Cliente;
+import com.ifsul.lawbot.entities.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {

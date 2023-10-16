@@ -1,6 +1,6 @@
-package com.ifsul.lawbot.repository;
+package com.ifsul.lawbot.repositories;
 
-import com.ifsul.lawbot.domain.advogado.Advogado;
+import com.ifsul.lawbot.entities.Advogado;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 

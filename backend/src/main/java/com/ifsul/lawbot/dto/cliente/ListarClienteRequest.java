@@ -1,7 +1,6 @@
-package com.ifsul.lawbot.domain.cliente.dto;
+package com.ifsul.lawbot.dto.cliente;
 
-import com.ifsul.lawbot.domain.advogado.Advogado;
-import com.ifsul.lawbot.domain.cliente.Cliente;
+import com.ifsul.lawbot.entities.Cliente;
 
 public record ListarClienteRequest(
         Long id,

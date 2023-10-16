@@ -1,12 +1,9 @@
 package com.ifsul.lawbot.controller;
 
-import com.ifsul.lawbot.domain.advogado.Advogado;
-import com.ifsul.lawbot.domain.advogado.dto.CadastrarAdvogadoRequest;
-import com.ifsul.lawbot.domain.advogado.dto.DetalharAdvogadoRequest;
-import com.ifsul.lawbot.domain.advogado.dto.EditarAdvogadoRequest;
-import com.ifsul.lawbot.domain.advogado.dto.ListarAdvogadoRequest;
-import com.ifsul.lawbot.infra.security.HashSenhas;
-import com.ifsul.lawbot.repository.AdvogadoRepository;
+import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
+import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
+import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
+import com.ifsul.lawbot.services.AdvogadoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,51 +19,33 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class AdvogadoController {
 
     @Autowired
-    private AdvogadoRepository repository;
-
-    @Autowired
-    private HashSenhas hashSenhas;
+    AdvogadoService service;
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastrar(@RequestBody @Valid CadastrarAdvogadoRequest dados, UriComponentsBuilder uriBuilder){
-
-        var advogado = new Advogado(dados);
-        advogado.setSenha(hashSenhas.hash(advogado.getSenha()));
-        repository.save(advogado);
-
-        var uri = uriBuilder.path("/advogado/{id}").buildAndExpand(advogado.getId()).toUri();
-        return ResponseEntity.created(uri).body(new DetalharAdvogadoRequest(advogado));
+    public ResponseEntity cadastrarAdvogado(@RequestBody @Valid CadastrarAdvogadoRequest dados, UriComponentsBuilder uriBuilder){
+        return service.cadastrarAdvogado(dados, uriBuilder);
     }
 
     @GetMapping
     public ResponseEntity<Page<ListarAdvogadoRequest>> listarAdvogados(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
-        var page = repository.findAll(paginacao).map(ListarAdvogadoRequest::new);
-        return ResponseEntity.ok(page);
+        return service.listarAdvogado(paginacao);
     }
 
     @PutMapping
     @Transactional
     public ResponseEntity editarAdvogado(@RequestBody @Valid EditarAdvogadoRequest dados){
-        var advogado = repository.getReferenceById(dados.id());
-        advogado.atualizar(dados);
-
-        return ResponseEntity.ok(new DetalharAdvogadoRequest(advogado));
+        return service.editarAdvogado(dados);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity deletarAdvogado(@PathVariable Long id){
-        var advogado = repository.getReferenceById(id);
-        repository.delete(advogado);
-
-        return ResponseEntity.noContent().build();
+        return service.deletarAdvogado(id);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity detalharAdvogado(@PathVariable Long id){
-        var advogado = repository.getReferenceById(id);
-
-        return ResponseEntity.ok(new DetalharAdvogadoRequest(advogado));
+        return service.detalharAdvogado(id);
     }
 }

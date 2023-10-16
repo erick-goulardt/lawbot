@@ -1,4 +1,4 @@
-package com.ifsul.lawbot.infra.security;
+package com.ifsul.lawbot.security;
 
 public record DadosTokenJWT(String token) {
 }

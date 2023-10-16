@@ -1,4 +1,4 @@
-package com.ifsul.lawbot.domain.advogado.dto;
+package com.ifsul.lawbot.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

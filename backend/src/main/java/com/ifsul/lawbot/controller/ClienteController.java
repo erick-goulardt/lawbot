@@ -1,18 +1,9 @@
 package com.ifsul.lawbot.controller;
 
-import com.ifsul.lawbot.domain.advogado.Advogado;
-import com.ifsul.lawbot.domain.advogado.dto.CadastrarAdvogadoRequest;
-import com.ifsul.lawbot.domain.advogado.dto.DetalharAdvogadoRequest;
-import com.ifsul.lawbot.domain.advogado.dto.EditarAdvogadoRequest;
-import com.ifsul.lawbot.domain.advogado.dto.ListarAdvogadoRequest;
-import com.ifsul.lawbot.domain.cliente.Cliente;
-import com.ifsul.lawbot.domain.cliente.dto.CadastrarClienteRequest;
-import com.ifsul.lawbot.domain.cliente.dto.DetalharClienteRequest;
-import com.ifsul.lawbot.domain.cliente.dto.EditarClienteRequest;
-import com.ifsul.lawbot.domain.cliente.dto.ListarClienteRequest;
-import com.ifsul.lawbot.infra.security.HashSenhas;
-import com.ifsul.lawbot.repository.AdvogadoRepository;
-import com.ifsul.lawbot.repository.ClienteRepository;
+import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
+import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
+import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
+import com.ifsul.lawbot.services.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,51 +19,33 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class ClienteController {
 
     @Autowired
-    private ClienteRepository repository;
-
-    @Autowired
-    private HashSenhas hashSenhas;
+    ClienteService service;
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastrar(@RequestBody @Valid CadastrarClienteRequest dados, UriComponentsBuilder uriBuilder){
-
-        var cliente = new Cliente(dados);
-        cliente.setSenha(hashSenhas.hash(cliente.getSenha()));
-        repository.save(cliente);
-
-        var uri = uriBuilder.path("/cliente/{id}").buildAndExpand(cliente.getId()).toUri();
-        return ResponseEntity.created(uri).body(new DetalharClienteRequest(cliente));
+    public ResponseEntity cadastrarCliente(@RequestBody @Valid CadastrarClienteRequest dados, UriComponentsBuilder uriBuilder){
+        return service.cadastrarCliente(dados, uriBuilder);
     }
 
     @GetMapping
-    public ResponseEntity<Page<ListarClienteRequest>> listarAdvogados(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
-        var page = repository.findAll(paginacao).map(ListarClienteRequest::new);
-        return ResponseEntity.ok(page);
+    public ResponseEntity<Page<ListarClienteRequest>> listarClientes(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
+        return service.listarClientes(paginacao);
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity editarAdvogado(@RequestBody @Valid EditarClienteRequest dados){
-        var cliente = repository.getReferenceById(dados.id());
-        cliente.atualizar(dados);
-
-        return ResponseEntity.ok(new DetalharClienteRequest(cliente));
+    public ResponseEntity editarCliente(@RequestBody @Valid EditarClienteRequest dados){
+        return service.editarCliente(dados);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity deletarAdvogado(@PathVariable Long id){
-        var cliente = repository.getReferenceById(id);
-        repository.delete(cliente);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity deletarCliente(@PathVariable Long id){
+        return service.deletarCliente(id);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity detalharAdvogado(@PathVariable Long id){
-        var cliente = repository.getReferenceById(id);
-
-        return ResponseEntity.ok(new DetalharClienteRequest(cliente));
+    public ResponseEntity detalharCliente(@PathVariable Long id){
+        return service.detalharCliente(id);
     }
 }

@@ -1,11 +1,8 @@
-package com.ifsul.lawbot.domain.cliente;
+package com.ifsul.lawbot.entities;
 
-import com.ifsul.lawbot.domain.advogado.dto.EditarAdvogadoRequest;
-import com.ifsul.lawbot.domain.cliente.dto.CadastrarClienteRequest;
-import com.ifsul.lawbot.domain.cliente.dto.EditarClienteRequest;
-import com.ifsul.lawbot.domain.processo.Processo;
+import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
+import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

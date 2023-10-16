@@ -1,4 +1,4 @@
-package com.ifsul.lawbot.infra.security;
+package com.ifsul.lawbot.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

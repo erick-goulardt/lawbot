@@ -1,8 +1,7 @@
-package com.ifsul.lawbot.domain.advogado;
+package com.ifsul.lawbot.entities;
 
-import com.ifsul.lawbot.domain.processo.Processo;
-import com.ifsul.lawbot.domain.advogado.dto.CadastrarAdvogadoRequest;
-import com.ifsul.lawbot.domain.advogado.dto.EditarAdvogadoRequest;
+import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
+import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

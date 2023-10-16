@@ -1,6 +1,6 @@
-package com.ifsul.lawbot.domain.advogado.dto;
+package com.ifsul.lawbot.dto.advogado;
 
-import com.ifsul.lawbot.domain.advogado.Advogado;
+import com.ifsul.lawbot.entities.Advogado;
 
 public record ListarAdvogadoRequest (
         Long id,

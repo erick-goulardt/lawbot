@@ -1,7 +1,5 @@
-package com.ifsul.lawbot.domain.processo;
+package com.ifsul.lawbot.entities;
 
-import com.ifsul.lawbot.domain.advogado.Advogado;
-import com.ifsul.lawbot.domain.cliente.Cliente;
 import jakarta.persistence.*;
 
 @Entity

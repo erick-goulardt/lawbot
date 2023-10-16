@@ -1,10 +1,10 @@
-package com.ifsul.lawbot.domain.advogado.dto;
+package com.ifsul.lawbot.dto.cliente;
 
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record EditarAdvogadoRequest(
+public record EditarClienteRequest(
         @NotNull
         Long id,
         String nome,

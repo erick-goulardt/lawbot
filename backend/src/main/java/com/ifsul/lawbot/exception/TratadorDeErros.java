@@ -1,4 +1,4 @@
-package com.ifsul.lawbot.infra.exception;
+package com.ifsul.lawbot.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;

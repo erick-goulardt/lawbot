@@ -1,6 +1,6 @@
-package com.ifsul.lawbot.domain.advogado;
+package com.ifsul.lawbot.services;
 
-import com.ifsul.lawbot.repository.AdvogadoRepository;
+import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

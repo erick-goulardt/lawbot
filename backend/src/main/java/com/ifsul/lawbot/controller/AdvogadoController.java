@@ -3,6 +3,7 @@ package com.ifsul.lawbot.controller;
 import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
+import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.services.AdvogadoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/advogado")
@@ -28,8 +31,8 @@ public class AdvogadoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ListarAdvogadoRequest>> listarAdvogados(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
-        return service.listarAdvogado(paginacao);
+    public List<Advogado> listarAdvogados(){
+        return service.listarAdvogados();
     }
 
     @PutMapping

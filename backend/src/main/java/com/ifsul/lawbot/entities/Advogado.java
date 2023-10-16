@@ -24,15 +24,16 @@ public class Advogado implements UserDetails {
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
      private Long id;
+     @Column(columnDefinition = "VARCHAR(2048)")
      private String nome;
-     @Column(unique = true)
+     @Column(unique = true, columnDefinition = "VARCHAR(2048)")
      private String email;
      private String senha;
      @OneToMany(mappedBy = "advogado")
      private List<Processo> processos;
-     @Column(unique = true)
+     @Column(unique = true, columnDefinition = "VARCHAR(2048)")
      private String oab;
-     @Column(unique = true)
+     @Column(unique = true, columnDefinition = "VARCHAR(2048)")
      private String cpf;
      private LocalDate dataNascimento;
 

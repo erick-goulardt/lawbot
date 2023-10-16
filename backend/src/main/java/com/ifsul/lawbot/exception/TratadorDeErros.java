@@ -26,12 +26,6 @@ public class TratadorDeErros {
         var erros = ex.getFieldErrors();
         return ResponseEntity.badRequest().body(erros.stream().map(ErroValidacaoRequest::new).toList());
     }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity tratarErro500(DataIntegrityViolationException ex){
-        var erros = ex.getLocalizedMessage();
-        return ResponseEntity.internalServerError().body(erros);
-    }
     
     private record ErroValidacaoRequest(String campo, String mensagem){
         public ErroValidacaoRequest(FieldError erro){

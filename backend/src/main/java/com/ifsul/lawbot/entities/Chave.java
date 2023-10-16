@@ -19,9 +19,9 @@ public class Chave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column (columnDefinition = "VARBINARY(2048)")
     private PrivateKey chavePrivada;
-
+    @Column (columnDefinition = "VARBINARY(2048)")
     private PublicKey chavePublica;
 
     @OneToMany(mappedBy = "chave")

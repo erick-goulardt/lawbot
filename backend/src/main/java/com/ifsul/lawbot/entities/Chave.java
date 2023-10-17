@@ -26,4 +26,7 @@ public class Chave {
 
     @OneToMany(mappedBy = "chave")
     private List<Advogado> advogados;
+
+    @OneToMany(mappedBy = "chave")
+    private List<Cliente> clientes;
 }

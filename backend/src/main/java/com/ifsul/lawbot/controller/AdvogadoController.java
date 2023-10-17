@@ -31,7 +31,7 @@ public class AdvogadoController {
     }
 
     @GetMapping
-    public List<Advogado> listarAdvogados(){
+    public List<ListarAdvogadoRequest> listarAdvogados(){
         return service.listarAdvogados();
     }
 

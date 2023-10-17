@@ -57,20 +57,21 @@ public class AdvogadoService {
 
     }
 
-    public List<Advogado> listarAdvogados() {
-        int i = 0;
-        List<Advogado> advogados = repository.findAll();
-        List<Advogado> advogadosDecriptado = new ArrayList<>();
-        for (Advogado advogado : advogados) {
-            Chave chave = advogados.get(i).getChave();
-            advogado.setNome(cript.decriptar(advogados.get(i).getNome(), chave.getChavePrivada()));
-            advogado.setCpf(cript.decriptar(advogados.get(i).getCpf(), chave.getChavePrivada()));
-            advogado.setOab(cript.decriptar(advogados.get(i).getOab(), chave.getChavePrivada()));
-            advogado.setEmail(cript.decriptar(advogados.get(i).getEmail(), chave.getChavePrivada()));
-            advogado.setDataNascimento(advogados.get(i).getDataNascimento());
-            advogadosDecriptado.add(advogado);
-            i++;
-        }
+    public List<ListarAdvogadoRequest> listarAdvogados() {
+        List<ListarAdvogadoRequest> advogadosDecriptado = new ArrayList<>();
+        List<Advogado> advogados = repository.findAll().stream().map(
+                advogado -> {
+                    advogado.setNome(cript.decriptar(advogado.getNome(), advogado.getChave().getChavePrivada()));
+                    advogado.setCpf(cript.decriptar(advogado.getCpf(), advogado.getChave().getChavePrivada()));
+                    advogado.setOab(cript.decriptar(advogado.getOab(), advogado.getChave().getChavePrivada()));
+                    advogado.setEmail(cript.decriptar(advogado.getEmail(), advogado.getChave().getChavePrivada()));
+
+                    advogadosDecriptado.add(new ListarAdvogadoRequest(advogado));
+                    return advogado;
+
+                }
+        ).toList();
+
         return advogadosDecriptado;
     }
 

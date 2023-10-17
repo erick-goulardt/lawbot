@@ -57,7 +57,7 @@ public class AdvogadoService {
 
     }
 
-    public List<ListarAdvogadoRequest> listarAdvogados() {
+    public ResponseEntity<List<ListarAdvogadoRequest>> listarAdvogados() {
         List<ListarAdvogadoRequest> advogadosDecriptado = new ArrayList<>();
         List<Advogado> advogados = repository.findAll().stream().map(
                 advogado -> {
@@ -72,12 +72,20 @@ public class AdvogadoService {
                 }
         ).toList();
 
-        return advogadosDecriptado;
+        return ResponseEntity.ok(advogadosDecriptado);
     }
 
     public ResponseEntity editarAdvogado(EditarAdvogadoRequest dados){
         var advogado = repository.getReferenceById(dados.id());
-        advogado.atualizar(dados);
+        if( dados.dataNascimento() != null){
+            advogado.setDataNascimento(dados.dataNascimento());
+        }
+        if( dados.email() != null){
+            advogado.setEmail(cript.encriptar(dados.email(), advogado.getChave().getChavePublica()));
+        }
+        if( dados.nome() != null){
+            advogado.setNome(cript.encriptar(dados.nome(), advogado.getChave().getChavePublica()));
+        }
 
         return ResponseEntity.ok(new DetalharAdvogadoRequest(advogado));
     }
@@ -91,7 +99,14 @@ public class AdvogadoService {
 
     public ResponseEntity detalharAdvogado(Long id){
         var advogado = repository.getReferenceById(id);
+        var advogadoDecriptografado = new Advogado();
+        advogadoDecriptografado.setId(id);
+        advogadoDecriptografado.setNome(cript.decriptar(advogado.getNome(), advogado.getChave().getChavePrivada()));
+        advogadoDecriptografado.setCpf(cript.decriptar(advogado.getCpf(), advogado.getChave().getChavePrivada()));
+        advogadoDecriptografado.setOab(cript.decriptar(advogado.getOab(), advogado.getChave().getChavePrivada()));
+        advogadoDecriptografado.setEmail(cript.decriptar(advogado.getEmail(), advogado.getChave().getChavePrivada()));
+        advogadoDecriptografado.setDataNascimento(advogado.getDataNascimento());
 
-        return ResponseEntity.ok(new DetalharAdvogadoRequest(advogado));
+        return ResponseEntity.ok(new DetalharAdvogadoRequest(advogadoDecriptografado));
     }
 }

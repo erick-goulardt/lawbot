@@ -31,7 +31,7 @@ public class AdvogadoController {
     }
 
     @GetMapping
-    public List<ListarAdvogadoRequest> listarAdvogados(){
+    public ResponseEntity<List<ListarAdvogadoRequest>> listarAdvogados(){
         return service.listarAdvogados();
     }
 

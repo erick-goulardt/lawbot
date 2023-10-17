@@ -12,7 +12,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
 
-@Service
 public class CriptografiaService {
     public static final String ALGORITHM = "RSA";
     public static final int KEY_SIZE = 2048;

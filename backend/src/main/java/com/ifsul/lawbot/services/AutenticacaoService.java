@@ -21,9 +21,18 @@ public class AutenticacaoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String oab) throws UsernameNotFoundException {
+<<<<<<< HEAD
         return repository.findAll().stream().filter(advogado ->
                 Objects.equals(decriptar(advogado.getOab(), advogado.getChave().getChavePrivada()), oab)
         ).toList().stream().findFirst().get();
+=======
+
+        Advogado adv = repository.findAll().stream().filter(advogado ->
+                Objects.equals(decriptar(advogado.getOab(), advogado.getChave().getChavePrivada()), oab)
+        ).toList().stream().findFirst().get();
+
+        return adv;
+>>>>>>> f4f29d47b9c8edc301dad3602290975262fb8167
     }
 
 }

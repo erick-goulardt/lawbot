@@ -22,6 +22,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("Lawbot")
                     .withSubject(advogado.getOab())
+                    .withClaim("id", advogado.getId())
                     .withExpiresAt(dataExpiracap())
                     .sign(algoritmo);
         } catch (JWTCreationException exception){

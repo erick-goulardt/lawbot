@@ -8,4 +8,5 @@ public interface AdvogadoRepository extends JpaRepository<Advogado, Long> {
 
     UserDetails findByOab(String oab);
 
+
 }

@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+
+import static com.ifsul.lawbot.services.CriptografiaService.decriptar;
 
 @Service
 public class AutenticacaoService implements UserDetailsService {
@@ -16,26 +19,11 @@ public class AutenticacaoService implements UserDetailsService {
     @Autowired
     private AdvogadoRepository repository;
 
-    @Autowired
-    private CriptografiaService cript;
-
     @Override
     public UserDetails loadUserByUsername(String oab) throws UsernameNotFoundException {
-        System.out.println(oab);
-        var adv = new Advogado();
-        List<Advogado> lista = (List<Advogado>) repository.findAll().stream().map(
-                advogado -> {
-                    if(cript.decriptar(advogado.getOab(), advogado.getChave().getChavePrivada()).equals(oab)){
-                        adv.setNome(advogado.getNome());
-                        adv.setEmail(advogado.getEmail());
-                        adv.setSenha(advogado.getSenha());
-                        adv.setOab(advogado.getOab());
-                        adv.setCpf(advogado.getCpf());
-                        adv.setDataNascimento(advogado.getDataNascimento());
-                    }
-                    return adv;
-                }
-        );
-        return adv;
+        return repository.findAll().stream().filter(advogado ->
+                Objects.equals(decriptar(advogado.getOab(), advogado.getChave().getChavePrivada()), oab)
+        ).toList().stream().findFirst().get();
     }
+
 }

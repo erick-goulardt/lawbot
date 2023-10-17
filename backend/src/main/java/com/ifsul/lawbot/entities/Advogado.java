@@ -50,18 +50,6 @@ public class Advogado implements UserDetails {
           this.dataNascimento = dados.dataNascimento();
      }
 
-     public void atualizar(EditarAdvogadoRequest dados){
-          if( dados.dataNascimento() != null){
-               this.dataNascimento = dados.dataNascimento();
-          }
-          if( dados.email() != null){
-               this.email = dados.email();
-          }
-          if( dados.nome() != null){
-               this.nome = dados.nome();
-          }
-     }
-
      @Override
      public Collection<? extends GrantedAuthority> getAuthorities() {
           return List.of(new SimpleGrantedAuthority("ROLE_USER"));

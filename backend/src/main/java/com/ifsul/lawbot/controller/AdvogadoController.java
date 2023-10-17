@@ -1,19 +1,17 @@
 package com.ifsul.lawbot.controller;
 
 import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
+import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
+import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.services.AdvogadoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -22,33 +20,38 @@ import java.util.List;
 public class AdvogadoController {
 
     @Autowired
-    AdvogadoService service;
+    private AdvogadoService service;
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastrarAdvogado(@RequestBody @Valid CadastrarAdvogadoRequest dados, UriComponentsBuilder uriBuilder){
-        return service.cadastrarAdvogado(dados, uriBuilder);
+    public ResponseEntity<MessageDTO> cadastrarAdvogado(@RequestBody @Valid CadastrarAdvogadoRequest dados){
+        var response = service.cadastrarAdvogado(dados);
+        return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping
+    @GetMapping("/findAll")
     public ResponseEntity<List<ListarAdvogadoRequest>> listarAdvogados(){
-        return service.listarAdvogados();
+        var response = service.listarAdvogados();
+        return ResponseEntity.status(200).body(response);
     }
 
-    @PutMapping
+    @PutMapping("/edit/{advogadoId}")
     @Transactional
-    public ResponseEntity editarAdvogado(@RequestBody @Valid EditarAdvogadoRequest dados){
-        return service.editarAdvogado(dados);
+    public ResponseEntity<Advogado> editarAdvogado(@PathVariable Long advogadoId, @RequestBody @Valid EditarAdvogadoRequest dados){
+        Advogado advogadoUpdated = service.editarAdvogado(advogadoId, dados);
+        return ResponseEntity.status(200).body(advogadoUpdated);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     @Transactional
-    public ResponseEntity deletarAdvogado(@PathVariable Long id){
-        return service.deletarAdvogado(id);
+    public ResponseEntity<?> deletarAdvogado(@PathVariable Long id){
+        service.deletarAdvogado(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity detalharAdvogado(@PathVariable Long id){
-        return service.detalharAdvogado(id);
+    @GetMapping("/info/{id}")
+    public ResponseEntity<DetalharAdvogadoRequest> detalharAdvogado(@PathVariable Long id){
+        var response = service.detalharAdvogado(id);
+        return ResponseEntity.status(200).body(response);
     }
 }

@@ -1,8 +1,8 @@
 package com.ifsul.lawbot.controller;
 
 import com.ifsul.lawbot.entities.Advogado;
-import com.ifsul.lawbot.dto.AutenticarRequest;
-import com.ifsul.lawbot.security.DadosTokenJWT;
+import com.ifsul.lawbot.dto.auth.AutenticarRequest;
+import com.ifsul.lawbot.dto.utils.DadosTokenJWT;
 import com.ifsul.lawbot.security.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ifsul.lawbot.services.HashSenhasService;
 
 
 @RestController
@@ -22,10 +21,6 @@ public class AutenticacaoController {
 
     @Autowired
     private AuthenticationManager manager;
-
-    @Autowired
-    private HashSenhasService hashSenhas;
-
     @Autowired
     private TokenService tokenService;
     @PostMapping

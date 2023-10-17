@@ -1,4 +1,4 @@
-package com.ifsul.lawbot.dto;
+package com.ifsul.lawbot.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 

@@ -36,7 +36,7 @@ public class ClienteService {
 
     public ResponseEntity editarCliente(EditarClienteRequest dados){
         var cliente = repository.getReferenceById(dados.id());
-        cliente.atualizar(dados);
+        //cliente.atualizar(dados);
 
         return ResponseEntity.ok(new DetalharClienteRequest(cliente));
     }

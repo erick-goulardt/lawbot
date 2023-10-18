@@ -22,7 +22,7 @@ public class AdvogadoController {
     @Autowired
     private AdvogadoService service;
 
-    @PostMapping
+    @PostMapping("/cadastro")
     @Transactional
     public ResponseEntity<MessageDTO> cadastrarAdvogado(@RequestBody @Valid CadastrarAdvogadoRequest dados){
         var response = service.cadastrarAdvogado(dados);
@@ -44,9 +44,9 @@ public class AdvogadoController {
 
     @DeleteMapping("/delete/{id}")
     @Transactional
-    public ResponseEntity<?> deletarAdvogado(@PathVariable Long id){
+    public ResponseEntity<MessageDTO> deletarAdvogado(@PathVariable Long id){
         service.deletarAdvogado(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(200).body(new MessageDTO(("Deletado com sucesso!")));
     }
 
     @GetMapping("/info/{id}")

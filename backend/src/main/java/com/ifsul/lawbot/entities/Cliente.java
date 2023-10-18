@@ -2,6 +2,7 @@ package com.ifsul.lawbot.entities;
 
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
+import io.swagger.annotations.ApiModelProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +24,7 @@ import java.util.List;
 @Table(name = "cliente")
 public class Cliente implements UserDetails {
 
-    @Id
+    @Id @ApiModelProperty(dataType = "int64")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
@@ -48,40 +49,6 @@ public class Cliente implements UserDetails {
         this.dataNascimento = dados.dataNascimento();
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-    }
-
-    @Override
-    public String getPassword() {
-        return senha;
-    }
-
-    @Override
-    public String getUsername() {
-        return nome;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

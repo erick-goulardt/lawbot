@@ -1,7 +1,9 @@
 package com.ifsul.lawbot.entities;
 
 import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
+import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
+import io.swagger.annotations.ApiModelProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
@@ -21,7 +23,7 @@ import java.util.List;
 @Builder
 public class Advogado implements UserDetails {
 
-     @Id
+     @Id @ApiModelProperty(dataType = "int64")
      @GeneratedValue(strategy = GenerationType.IDENTITY)
      private Long id;
      @Column(columnDefinition = "VARCHAR(2048)")
@@ -45,6 +47,14 @@ public class Advogado implements UserDetails {
           this.nome = dados.nome();
           this.email = dados.email();
           this.senha = dados.senha();
+          this.oab = dados.oab();
+          this.cpf = dados.cpf();
+          this.dataNascimento = dados.dataNascimento();
+     }
+
+     public Advogado (DetalharAdvogadoRequest dados) {
+          this.nome = dados.nome();
+          this.email = dados.email();
           this.oab = dados.oab();
           this.cpf = dados.cpf();
           this.dataNascimento = dados.dataNascimento();

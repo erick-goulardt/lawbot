@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Cliente;
-import com.ifsul.lawbot.entities.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class TokenService {
                     .withIssuer("Lawbot")
                     .withSubject(usuario.getUsername())
                     .withClaim("id", usuario.getId())
-                    .withExpiresAt(dataExpiracap())
+                    .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
         } catch (JWTCreationException exception){
             throw new RuntimeException("erro ao gerar token jwt", exception);
@@ -39,14 +38,14 @@ public class TokenService {
                     .withIssuer("Lawbot")
                     .withSubject(usuario.getUsername())
                     .withClaim("id", usuario.getId())
-                    .withExpiresAt(dataExpiracap())
+                    .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
         } catch (JWTCreationException exception){
             throw new RuntimeException("erro ao gerar token jwt", exception);
         }
     }
 
-    private Instant dataExpiracap() {
+    private Instant dataExpiracao() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }

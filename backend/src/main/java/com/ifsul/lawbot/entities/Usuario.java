@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-public class Usuario implements UserDetails {
+public abstract class Usuario implements UserDetails {
 
     @Id
     @ApiModelProperty(dataType = "int64")

@@ -24,10 +24,13 @@ public class AdvogadoService {
     @Autowired
     private GerarChaveService gerarChaveService;
 
-
     public MessageDTO cadastrarAdvogado(CadastrarAdvogadoRequest dados) {
-        Advogado advogado = Advogado.builder().dataNascimento(dados.dataNascimento()).senha(HashSenhasService.hash(dados.senha())).build();
+        Advogado advogado = Advogado.builder().build();
 
+        advogado.setDataNascimento(dados.dataNascimento());
+        advogado.setSenha(
+                HashSenhasService.hash(dados.senha())
+        );
         Chave key = gerarChaveService.findKey();
         advogado.setNome(
                 encriptar(dados.nome(), key.getChavePublica())

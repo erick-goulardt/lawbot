@@ -1,24 +1,15 @@
 package com.ifsul.lawbot.services;
 
-import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
-import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
-import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
-import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
-import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.PrivateKey;
 import java.util.List;
@@ -36,8 +27,12 @@ public class ClienteService {
     private GerarChaveService gerarChaveService;
 
     public MessageDTO cadastrarCliente(CadastrarClienteRequest dados) {
-        Cliente cliente = Cliente.builder().dataNascimento(dados.dataNascimento()).senha(HashSenhasService.hash(dados.senha())).build();
+        Cliente cliente = Cliente.builder().build();
 
+        cliente.setDataNascimento(dados.dataNascimento());
+        cliente.setSenha(
+                HashSenhasService.hash(dados.senha())
+        );
         Chave key = gerarChaveService.findKey();
         cliente.setNome(
                 encriptar(dados.nome(), key.getChavePublica())

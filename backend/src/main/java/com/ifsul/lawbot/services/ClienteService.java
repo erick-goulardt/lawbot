@@ -1,9 +1,16 @@
 package com.ifsul.lawbot.services;
 
+import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
+import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
+import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
+import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
+import com.ifsul.lawbot.dto.utils.MessageDTO;
+import com.ifsul.lawbot.entities.Advogado;
+import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,44 +20,85 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.security.PrivateKey;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
+
 @Service
 public class ClienteService {
 
     @Autowired
     private ClienteRepository repository;
 
-    public ResponseEntity cadastrarCliente(CadastrarClienteRequest dados, UriComponentsBuilder uriBuilder){
+    @Autowired
+    private GerarChaveService gerarChaveService;
 
-        var cliente = new Cliente(dados);
-        cliente.setSenha(HashSenhasService.hash(cliente.getSenha()));
+    public MessageDTO cadastrarCliente(CadastrarClienteRequest dados) {
+        Cliente cliente = Cliente.builder().dataNascimento(dados.dataNascimento()).senha(HashSenhasService.hash(dados.senha())).build();
+
+        Chave key = gerarChaveService.findKey();
+        cliente.setNome(
+                encriptar(dados.nome(), key.getChavePublica())
+        );
+        cliente.setEmail(
+                encriptar(dados.email(), key.getChavePublica())
+        );
+        cliente.setCpf(
+                encriptar(dados.cpf(), key.getChavePublica())
+        );
+
+        cliente.setChave(key);
         repository.save(cliente);
-
-        var uri = uriBuilder.path("/cliente/{id}").buildAndExpand(cliente.getId()).toUri();
-        return ResponseEntity.created(uri).body(new DetalharClienteRequest(cliente));
+        return new MessageDTO("Usuário cadastrado!");
     }
 
-    public ResponseEntity<Page<ListarClienteRequest>> listarClientes(Pageable paginacao){
-        var page = repository.findAll(paginacao).map(ListarClienteRequest::new);
-        return ResponseEntity.ok(page);
+    public List<ListarClienteRequest> listarClientes() {
+        List<Cliente> clientes = repository.findAll();
+        return clientes.stream()
+                .map(this::descriptografarCliente)
+                .map(ListarClienteRequest::new)
+                .collect(Collectors.toList());
     }
 
-    public ResponseEntity editarCliente(EditarClienteRequest dados){
-        var cliente = repository.getReferenceById(dados.id());
-        //cliente.atualizar(dados);
+    public Cliente editarCliente(Long clienteId, EditarClienteRequest dados){
+        var cliente = repository.getReferenceById(clienteId);
 
-        return ResponseEntity.ok(new DetalharClienteRequest(cliente));
+        if ( dados.senha() != null) {
+            cliente.setSenha(HashSenhasService.hash(dados.senha()));
+        }
+        if( dados.email() != null){
+            cliente.setEmail(encriptar(dados.email(), cliente.getChave().getChavePublica()));
+        }
+        if( dados.nome() != null){
+            cliente.setNome(encriptar(dados.nome(), cliente.getChave().getChavePublica()));
+        }
+
+        repository.save(cliente);
+        return cliente;
     }
 
-    public ResponseEntity deletarCliente(Long id){
+    public MessageDTO deletarCliente(Long id){
         var cliente = repository.getReferenceById(id);
         repository.delete(cliente);
 
-        return ResponseEntity.noContent().build();
+        return new MessageDTO("Deletado com sucesso!");
     }
 
-    public ResponseEntity detalharCliente(Long id){
-        var cliente = repository.getReferenceById(id);
+    public DetalharClienteRequest detalharCliente(Long id) {
+        Cliente cliente = repository.getReferenceById(id);
+        Cliente ClienteDecriptografado = descriptografarCliente(cliente);
 
-        return ResponseEntity.ok(new DetalharClienteRequest(cliente));
+        return new DetalharClienteRequest(ClienteDecriptografado.getId(), ClienteDecriptografado.getNome(), ClienteDecriptografado.getEmail(),
+                ClienteDecriptografado.getCpf(), ClienteDecriptografado.getDataNascimento());
+    }
+
+    private Cliente descriptografarCliente(Cliente cliente) {
+        PrivateKey chavePrivada = cliente.getChave().getChavePrivada();
+        cliente.setNome(CriptografiaService.decriptar(cliente.getNome(), chavePrivada));
+        cliente.setCpf(CriptografiaService.decriptar(cliente.getCpf(), chavePrivada));
+        cliente.setEmail(CriptografiaService.decriptar(cliente.getEmail(), chavePrivada));
+        return cliente;
     }
 }

@@ -4,10 +4,7 @@ import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import io.swagger.annotations.ApiModelProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,18 +19,20 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "cliente")
+@Builder
 public class Cliente implements UserDetails {
 
     @Id @ApiModelProperty(dataType = "int64")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(columnDefinition = "VARCHAR(2048)")
     private String nome;
-    @Column(unique = true)
+    @Column(unique = true, columnDefinition = "VARCHAR(2048)")
     private String email;
     private String senha;
     @OneToMany(mappedBy = "cliente")
     private List<Processo> processos;
-    @Column(unique = true)
+    @Column(unique = true, columnDefinition = "VARCHAR(2048)")
     private String cpf;
     private LocalDate dataNascimento;
 

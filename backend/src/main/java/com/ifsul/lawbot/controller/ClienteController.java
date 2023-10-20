@@ -1,8 +1,14 @@
 package com.ifsul.lawbot.controller;
 
+import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
+import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
+import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
+import com.ifsul.lawbot.dto.utils.MessageDTO;
+import com.ifsul.lawbot.entities.Advogado;
+import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.services.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/cliente")
 public class ClienteController {
@@ -21,31 +29,33 @@ public class ClienteController {
     @Autowired
     ClienteService service;
 
-    @PostMapping
+    @PostMapping("/cadastro")
     @Transactional
-    public ResponseEntity cadastrarCliente(@RequestBody @Valid CadastrarClienteRequest dados, UriComponentsBuilder uriBuilder){
-        return service.cadastrarCliente(dados, uriBuilder);
+    public MessageDTO cadastrarCliente(@RequestBody @Valid CadastrarClienteRequest dados){
+        return service.cadastrarCliente(dados);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<ListarClienteRequest>> listarClientes(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
-        return service.listarClientes(paginacao);
+    @GetMapping("/buscarTodos")
+    public ResponseEntity<List<ListarClienteRequest>> listarClientes(){
+        var response = service.listarClientes();
+        return ResponseEntity.status(200).body(response);
     }
 
-    @PutMapping
+    @PutMapping("/editar/{clienteId}")
     @Transactional
-    public ResponseEntity editarCliente(@RequestBody @Valid EditarClienteRequest dados){
-        return service.editarCliente(dados);
+    public ResponseEntity<?> editarCliente(@PathVariable Long clienteId, @RequestBody @Valid EditarClienteRequest dados){
+        Cliente clienteAtualizado = service.editarCliente(clienteId, dados);
+        return ResponseEntity.status(200).body("Cliente atualizado!");
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity deletarCliente(@PathVariable Long id){
+    public MessageDTO deletarCliente(@PathVariable Long id){
         return service.deletarCliente(id);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity detalharCliente(@PathVariable Long id){
+    public DetalharClienteRequest detalharCliente(@PathVariable Long id){
         return service.detalharCliente(id);
     }
 }

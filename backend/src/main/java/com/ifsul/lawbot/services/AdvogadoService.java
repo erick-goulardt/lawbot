@@ -29,18 +29,6 @@ public class AdvogadoService {
         Advogado advogado = Advogado.builder().dataNascimento(dados.dataNascimento()).senha(HashSenhasService.hash(dados.senha())).build();
 
         Chave key = gerarChaveService.findKey();
-        advogado.setCpf(
-                CriptografiaService.encriptar(dados.cpf(), key.getChavePublica())
-        );
-        advogado.setNome(
-                CriptografiaService.encriptar(dados.nome(), key.getChavePublica())
-        );
-        advogado.setEmail(
-                CriptografiaService.encriptar(dados.email(), key.getChavePublica())
-        );
-        advogado.setOab(
-                CriptografiaService.encriptar(dados.oab(), key.getChavePublica())
-        );
         advogado.setNome(
                 encriptar(dados.nome(), key.getChavePublica())
         );
@@ -49,6 +37,9 @@ public class AdvogadoService {
         );
         advogado.setOab(
                 encriptar(dados.oab(), key.getChavePublica())
+        );
+        advogado.setCpf(
+                encriptar(dados.cpf(), key.getChavePublica())
         );
         advogado.setChave(key);
         repository.save(advogado);

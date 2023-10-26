@@ -1,6 +1,7 @@
 package com.ifsul.lawbot.entities;
 
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
+import com.ifsul.lawbot.services.GerarChaveService;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,6 +30,15 @@ public class Cliente extends Usuario{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    public Cliente (Cliente cliente){
+        this.setDataNascimento(cliente.getDataNascimento());
+        this.setNome(cliente.getNome());
+        this.setCpf(cliente.getCpf());
+        this.setSenha(cliente.getSenha());
+        this.setProcessos(cliente.getProcessos());
+        this.setEmail(cliente.getEmail());
     }
 
 }

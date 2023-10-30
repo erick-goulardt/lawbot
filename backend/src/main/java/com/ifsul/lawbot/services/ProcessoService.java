@@ -1,6 +1,7 @@
 package com.ifsul.lawbot.services;
 
 import com.ifsul.lawbot.dto.processo.CadastrarProcessoRequest;
+import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Chave;
@@ -12,6 +13,10 @@ import com.ifsul.lawbot.repositories.ProcessoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.security.PrivateKey;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ifsul.lawbot.services.ClienteService.encriptarCliente;
 import static com.ifsul.lawbot.services.CriptografiaService.decriptar;
@@ -44,6 +49,13 @@ public class ProcessoService {
 
         return processo;
     }
+
+    public Processo decriptarProcesso(Processo processo){
+        PrivateKey chave = processo.getChave().getChavePrivada();
+        processo.setDescricao(decriptar(processo.getDescricao(), chave));
+        processo.setStatus(decriptar(processo.getStatus(), chave));
+        return processo;
+    }
     public MessageDTO cadastrarProcesso(CadastrarProcessoRequest dados){
 
         Cliente cliente = clienteRepository.findById(dados.advogado().getId())
@@ -72,8 +84,16 @@ public class ProcessoService {
                 .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " + dados.advogado().getId()));
 
         Processo processo = cadastra(dados, encriptado, advogado);
-//
+
         processoRepository.save(processo);
         return new MessageDTO("Processo cadastrado!");
+    }
+
+    public List<ListarProcessosRequest> listarProcessos(){
+        List<Processo> processos = processoRepository.findAll();
+        return processos.stream()
+                .map(this::decriptarProcesso)
+                .map(ListarProcessosRequest::new)
+                .collect(Collectors.toList());
     }
 }

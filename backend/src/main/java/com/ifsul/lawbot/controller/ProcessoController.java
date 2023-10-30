@@ -1,17 +1,19 @@
 package com.ifsul.lawbot.controller;
 
 import com.ifsul.lawbot.dto.processo.CadastrarProcessoRequest;
+import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
+import com.ifsul.lawbot.entities.Processo;
 import com.ifsul.lawbot.services.ProcessoService;
 import jakarta.validation.Valid;
+import jdk.dynalink.linker.LinkerServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/processo")
@@ -31,6 +33,12 @@ public class ProcessoController {
     @Transactional
     public ResponseEntity<MessageDTO> cadastrarProcessoECliente(@RequestBody @Valid CadastrarProcessoRequest dados){
         var response = service.cadastrarProcessoComClienteNovo(dados);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @GetMapping("/buscarTodos")
+    public ResponseEntity<List<ListarProcessosRequest>> listarProcessos(){
+        var response = service.listarProcessos();
         return ResponseEntity.status(200).body(response);
     }
 }

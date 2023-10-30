@@ -6,9 +6,9 @@ import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.entities.Processo;
-import com.ifsul.lawbot.security.repositories.AdvogadoRepository;
-import com.ifsul.lawbot.security.repositories.ClienteRepository;
-import com.ifsul.lawbot.security.repositories.ProcessoRepository;
+import com.ifsul.lawbot.repositories.AdvogadoRepository;
+import com.ifsul.lawbot.repositories.ClienteRepository;
+import com.ifsul.lawbot.repositories.ProcessoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,13 +65,14 @@ public class ProcessoService {
         cliente.setChave(key);
 
         Cliente encriptado = new Cliente(encriptarCliente(cliente));
+        System.out.println("nome: " + decriptar(encriptado.getNome(), encriptado.getChave().getChavePrivada()));
         clienteRepository.save(encriptado);
 
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " + dados.advogado().getId()));
 
-        Processo processo = cadastra(dados, cliente, advogado);
-
+        Processo processo = cadastra(dados, encriptado, advogado);
+//
         processoRepository.save(processo);
         return new MessageDTO("Processo cadastrado!");
     }

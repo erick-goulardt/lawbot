@@ -1,7 +1,7 @@
 package com.ifsul.lawbot.services;
 
-import com.ifsul.lawbot.security.repositories.AdvogadoRepository;
-import com.ifsul.lawbot.security.repositories.ClienteRepository;
+import com.ifsul.lawbot.repositories.AdvogadoRepository;
+import com.ifsul.lawbot.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

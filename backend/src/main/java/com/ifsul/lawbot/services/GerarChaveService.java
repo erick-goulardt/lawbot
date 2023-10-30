@@ -1,7 +1,7 @@
 package com.ifsul.lawbot.services;
 
 import com.ifsul.lawbot.entities.Chave;
-import com.ifsul.lawbot.security.repositories.ChaveRepository;
+import com.ifsul.lawbot.repositories.ChaveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,10 @@ import static com.ifsul.lawbot.services.CriptografiaService.KEY_SIZE;
 public class GerarChaveService {
 
     @Autowired
-    private ChaveRepository repository;
+    private ChaveRepository chaveRepository;
 
     public Chave findKey() {
-        Optional<Chave> findKey = repository.findAll().stream().findFirst();
+        Optional<Chave> findKey = chaveRepository.findAll().stream().findFirst();
         Chave key = null;
 
         if (findKey.isEmpty()) {
@@ -29,7 +29,7 @@ public class GerarChaveService {
                 PublicKey publicKey = keyPair.getPublic();
                 PrivateKey privateKey = keyPair.getPrivate();
                 key = Chave.builder().chavePrivada(privateKey).chavePublica(publicKey).build();
-                repository.save(key);
+                chaveRepository.save(key);
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }

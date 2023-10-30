@@ -7,7 +7,7 @@ import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Cliente;
-import com.ifsul.lawbot.security.repositories.ClienteRepository;
+import com.ifsul.lawbot.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -98,7 +98,7 @@ public class ClienteService {
     }
 
     static public Cliente encriptarCliente(Cliente c) {
-        GerarChaveService gerarChaveService = new GerarChaveService();
+        Chave key = c.getChave();
 
         Cliente cliente = new Cliente();
 
@@ -106,7 +106,6 @@ public class ClienteService {
         cliente.setSenha(
                 HashSenhasService.hash(c.getSenha())
         );
-        Chave key = gerarChaveService.findKey();
         cliente.setNome(
                 encriptar(c.getNome(), key.getChavePublica())
         );
@@ -116,8 +115,7 @@ public class ClienteService {
         cliente.setCpf(
                 encriptar(c.getCpf(), key.getChavePublica())
         );
-
-        cliente.setChave(key);
+        cliente.setChave(c.getChave());
         return cliente;
     }
 }

@@ -4,7 +4,7 @@ import com.ifsul.lawbot.dto.advogado.*;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Chave;
-import com.ifsul.lawbot.security.repositories.AdvogadoRepository;
+import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

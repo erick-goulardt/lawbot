@@ -1,4 +1,4 @@
-package com.ifsul.lawbot.repositories;
+package com.ifsul.lawbot.security.repositories;
 
 import com.ifsul.lawbot.entities.Processo;
 import org.springframework.data.jpa.repository.JpaRepository;

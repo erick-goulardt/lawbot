@@ -39,6 +39,7 @@ public class Cliente extends Usuario{
         this.setSenha(cliente.getSenha());
         this.setProcessos(cliente.getProcessos());
         this.setEmail(cliente.getEmail());
+        this.setChave(cliente.getChave());
     }
 
 }

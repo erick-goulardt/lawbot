@@ -1,7 +1,7 @@
 package com.ifsul.lawbot.services;
 
 import com.ifsul.lawbot.entities.Chave;
-import com.ifsul.lawbot.repositories.ChaveRepository;
+import com.ifsul.lawbot.security.repositories.ChaveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

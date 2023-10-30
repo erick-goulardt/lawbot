@@ -6,6 +6,8 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,10 +25,15 @@ public class Processo {
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+    @Lob
+    @Column(columnDefinition = "BLOB")
     private String status;
     private LocalDate dataAtualizacao;
-    @Column(unique = true, columnDefinition = "VARCHAR(6000)")
+    @Lob
+    @Column(columnDefinition = "BLOB")
     private String descricao;
-
+    @ManyToOne
+    @JoinColumn(name = "chave_id")
+    private Chave chave;
 }
 

@@ -7,7 +7,7 @@ import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Cliente;
-import com.ifsul.lawbot.repositories.ClienteRepository;
+import com.ifsul.lawbot.security.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class ClienteService {
     @Autowired
     private GerarChaveService gerarChaveService;
 
-    public MessageDTO cadastrarCliente(CadastrarClienteRequest dados) {
+    public MessageDTO encriptarCliente(CadastrarClienteRequest dados) {
         Cliente cliente = Cliente.builder().build();
 
         cliente.setDataNascimento(dados.dataNascimento());
@@ -94,6 +94,30 @@ public class ClienteService {
         cliente.setNome(CriptografiaService.decriptar(cliente.getNome(), chavePrivada));
         cliente.setCpf(CriptografiaService.decriptar(cliente.getCpf(), chavePrivada));
         cliente.setEmail(CriptografiaService.decriptar(cliente.getEmail(), chavePrivada));
+        return cliente;
+    }
+
+    static public Cliente encriptarCliente(Cliente c) {
+        GerarChaveService gerarChaveService = new GerarChaveService();
+
+        Cliente cliente = new Cliente();
+
+        cliente.setDataNascimento(c.getDataNascimento());
+        cliente.setSenha(
+                HashSenhasService.hash(c.getSenha())
+        );
+        Chave key = gerarChaveService.findKey();
+        cliente.setNome(
+                encriptar(c.getNome(), key.getChavePublica())
+        );
+        cliente.setEmail(
+                encriptar(c.getEmail(), key.getChavePublica())
+        );
+        cliente.setCpf(
+                encriptar(c.getCpf(), key.getChavePublica())
+        );
+
+        cliente.setChave(key);
         return cliente;
     }
 }

@@ -1,24 +1,17 @@
 package com.ifsul.lawbot.controller;
 
-import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
-import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
-import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.services.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -32,7 +25,7 @@ public class ClienteController {
     @PostMapping("/cadastro")
     @Transactional
     public MessageDTO cadastrarCliente(@RequestBody @Valid CadastrarClienteRequest dados){
-        return service.cadastrarCliente(dados);
+        return service.encriptarCliente(dados);
     }
 
     @GetMapping("/buscarTodos")

@@ -8,14 +8,14 @@ import java.time.LocalDate;
 
 public record ListarProcessosRequest(
         Long id,
-        Advogado advogado,
-        Cliente cliente,
+        String advogado,
+        String cliente,
         String status,
         LocalDate dataAtualizacao,
         String descricao
 ) {
     public ListarProcessosRequest(Processo processo) {
-        this(processo.getId(), processo.getAdvogado(), processo.getCliente(), processo.getStatus(), processo.getDataAtualizacao(), processo.getDescricao());
+        this(processo.getId(), processo.getAdvogado().getNome(), processo.getCliente().getNome(), processo.getStatus(), processo.getDataAtualizacao(), processo.getDescricao());
     }
 
 }

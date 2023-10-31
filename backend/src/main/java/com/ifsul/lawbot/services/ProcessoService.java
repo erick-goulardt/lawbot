@@ -50,12 +50,13 @@ public class ProcessoService {
         return processo;
     }
 
-    public Processo decriptarProcesso(Processo processo){
-        PrivateKey chave = processo.getChave().getChavePrivada();
-        processo.setDescricao(decriptar(processo.getDescricao(), chave));
-        processo.setStatus(decriptar(processo.getStatus(), chave));
+    public Processo descriptografarLista(Processo processo){
+        processo = descriptografarProcesso(processo);
+        processo.setAdvogado(descriptografarAdvogado(processo.getAdvogado()));
+        processo.setCliente(descriptografarCliente(processo.getCliente()));
         return processo;
     }
+
     public MessageDTO cadastrarProcesso(CadastrarProcessoRequest dados){
 
         Cliente cliente = clienteRepository.findById(dados.advogado().getId())
@@ -64,8 +65,9 @@ public class ProcessoService {
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " + dados.advogado().getId()));
 
-        System.out.println(decriptar(cliente.getNome(), cliente.getChave().getChavePrivada()));
+        System.out.println("nome: " + decriptar(cliente.getNome(), cliente.getChave().getChavePrivada()));
         Processo processo = cadastra(dados, cliente, advogado);
+        System.out.println("descricao: " + decriptar(processo.getDescricao(), processo.getChave().getChavePrivada()));
         processoRepository.save(processo);
         return new MessageDTO("Processo cadastrado!");
     }
@@ -92,8 +94,32 @@ public class ProcessoService {
     public List<ListarProcessosRequest> listarProcessos(){
         List<Processo> processos = processoRepository.findAll();
         return processos.stream()
-                .map(this::decriptarProcesso)
+                .map(this::descriptografarLista)
                 .map(ListarProcessosRequest::new)
                 .collect(Collectors.toList());
+    }
+
+    private Processo descriptografarProcesso(Processo processo){
+        PrivateKey chaveProcesso = processo.getChave().getChavePrivada();
+        processo.setDescricao(decriptar(processo.getDescricao(), chaveProcesso));
+        processo.setStatus(decriptar(processo.getStatus(), chaveProcesso));
+        return processo;
+    }
+
+    private Advogado descriptografarAdvogado(Advogado advogado) {
+        PrivateKey chavePrivada = advogado.getChave().getChavePrivada();
+        advogado.setNome(decriptar(advogado.getNome(), chavePrivada));
+        advogado.setCpf(decriptar(advogado.getCpf(), chavePrivada));
+        advogado.setOab(decriptar(advogado.getOab(), chavePrivada));
+        advogado.setEmail(decriptar(advogado.getEmail(), chavePrivada));
+        return advogado;
+    }
+
+    private Cliente descriptografarCliente(Cliente cliente) {
+        PrivateKey chavePrivada = cliente.getChave().getChavePrivada();
+        cliente.setNome(decriptar(cliente.getNome(), chavePrivada));
+        cliente.setCpf(decriptar(cliente.getCpf(), chavePrivada));
+        cliente.setEmail(decriptar(cliente.getEmail(), chavePrivada));
+        return cliente;
     }
 }

@@ -26,11 +26,11 @@ public class Processo {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
     @Lob
-    @Column(columnDefinition = "BLOB")
+    @Column(columnDefinition = "LONGTEXT")
     private String status;
     private LocalDate dataAtualizacao;
     @Lob
-    @Column(columnDefinition = "BLOB")
+    @Column(columnDefinition = "LONGTEXT")
     private String descricao;
     @ManyToOne
     @JoinColumn(name = "chave_id")

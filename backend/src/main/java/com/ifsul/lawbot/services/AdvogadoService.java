@@ -27,9 +27,9 @@ public class AdvogadoService {
         Advogado advogado = Advogado.builder().build();
 
         advogado.setDataNascimento(dados.dataNascimento());
-        advogado.setSenha(
-                HashSenhasService.hash(dados.senha())
+        advogado.setSenha(HashSenhasService.hash(dados.senha())
         );
+
         Chave key = gerarChaveService.findKey();
         advogado.setNome(
                 encriptar(dados.nome(), key.getChavePublica())

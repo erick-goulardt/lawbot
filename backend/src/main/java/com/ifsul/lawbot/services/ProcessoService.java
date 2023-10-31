@@ -52,8 +52,8 @@ public class ProcessoService {
 
     public Processo descriptografarLista(Processo processo){
         processo = descriptografarProcesso(processo);
-        processo.setAdvogado(descriptografarAdvogado(processo.getAdvogado()));
-        processo.setCliente(descriptografarCliente(processo.getCliente()));
+        processo.getAdvogado().setNome(decriptar(processo.getAdvogado().getNome(), processo.getAdvogado().getChave().getChavePrivada()));
+        processo.getCliente().setNome(decriptar(processo.getCliente().getNome(), processo.getCliente().getChave().getChavePrivada()));
         return processo;
     }
 
@@ -65,9 +65,7 @@ public class ProcessoService {
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " + dados.advogado().getId()));
 
-        System.out.println("nome: " + decriptar(cliente.getNome(), cliente.getChave().getChavePrivada()));
         Processo processo = cadastra(dados, cliente, advogado);
-        System.out.println("descricao: " + decriptar(processo.getDescricao(), processo.getChave().getChavePrivada()));
         processoRepository.save(processo);
         return new MessageDTO("Processo cadastrado!");
     }

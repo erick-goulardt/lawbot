@@ -25,7 +25,6 @@ public class Processo {
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
-    @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String status;
     private LocalDate dataAtualizacao;

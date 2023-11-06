@@ -81,7 +81,8 @@ public class ProcessoService {
         clienteRepository.save(encriptado);
 
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " + dados.advogado().getId()));
+                .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " +
+                        dados.advogado().getId()));
 
         Processo processo = cadastra(dados, encriptado, advogado);
 
@@ -92,7 +93,7 @@ public class ProcessoService {
     public List<ListarProcessosRequest> listarProcessos(){
         List<Processo> processos = processoRepository.findAll();
         return processos.stream()
-                .map(this::descriptografarLista)
+                .map(this::descriptografarProcesso)
                 .map(ListarProcessosRequest::new)
                 .collect(Collectors.toList());
     }
@@ -101,6 +102,8 @@ public class ProcessoService {
         PrivateKey chaveProcesso = processo.getChave().getChavePrivada();
         processo.setDescricao(decriptar(processo.getDescricao(), chaveProcesso));
         processo.setStatus(decriptar(processo.getStatus(), chaveProcesso));
+        processo.setAdvogado(descriptografarAdvogado(processo.getAdvogado()));
+        processo.setCliente(descriptografarCliente(processo.getCliente()));
         return processo;
     }
 
@@ -110,6 +113,7 @@ public class ProcessoService {
         advogado.setCpf(decriptar(advogado.getCpf(), chavePrivada));
         advogado.setOab(decriptar(advogado.getOab(), chavePrivada));
         advogado.setEmail(decriptar(advogado.getEmail(), chavePrivada));
+        System.out.println(advogado);
         return advogado;
     }
 

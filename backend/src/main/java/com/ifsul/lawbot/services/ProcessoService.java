@@ -48,7 +48,7 @@ public class ProcessoService {
         Cliente cliente = clienteRepository.findById(dados.advogado().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + dados.cliente().getId()));
 
-        Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
+        Advogado advogado = advogadoRepository.findById(dados.cliente().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " + dados.advogado().getId()));
 
         Processo processo = cadastra(dados, cliente, advogado);

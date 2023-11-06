@@ -31,8 +31,5 @@ public class Processo {
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String descricao;
-    @ManyToOne
-    @JoinColumn(name = "chave_id")
-    private Chave chave;
 }
 

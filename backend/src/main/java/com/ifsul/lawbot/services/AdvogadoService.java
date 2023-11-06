@@ -3,12 +3,10 @@ package com.ifsul.lawbot.services;
 import com.ifsul.lawbot.dto.advogado.*;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Advogado;
-import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.PrivateKey;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,8 +18,6 @@ public class AdvogadoService {
     @Autowired
     private AdvogadoRepository repository;
 
-    @Autowired
-    private GerarChaveService gerarChaveService;
 
     public MessageDTO cadastrarAdvogado(CadastrarAdvogadoRequest dados) {
         Advogado advogado = Advogado.builder().build();
@@ -30,20 +26,18 @@ public class AdvogadoService {
         advogado.setSenha(HashSenhasService.hash(dados.senha())
         );
 
-        Chave key = gerarChaveService.findKey();
         advogado.setNome(
-                encriptar(dados.nome(), key.getChavePublica())
+                encriptar(dados.nome())
         );
         advogado.setEmail(
-                encriptar(dados.email(), key.getChavePublica())
+                encriptar(dados.email())
         );
         advogado.setOab(
-                encriptar(dados.oab(), key.getChavePublica())
+                encriptar(dados.oab())
         );
         advogado.setCpf(
-                encriptar(dados.cpf(), key.getChavePublica())
+                encriptar(dados.cpf())
         );
-        advogado.setChave(key);
         repository.save(advogado);
         return new MessageDTO("Usuário cadastrado!");
     }
@@ -63,10 +57,10 @@ public class AdvogadoService {
             advogado.setSenha(HashSenhasService.hash(dados.senha()));
         }
         if( dados.email() != null){
-            advogado.setEmail(CriptografiaService.encriptar(dados.email(), advogado.getChave().getChavePublica()));
+            advogado.setEmail(CriptografiaService.encriptar(dados.email()));
         }
         if( dados.nome() != null){
-            advogado.setNome(CriptografiaService.encriptar(dados.nome(), advogado.getChave().getChavePublica()));
+            advogado.setNome(CriptografiaService.encriptar(dados.nome()));
         }
 
         repository.save(advogado);
@@ -88,11 +82,10 @@ public class AdvogadoService {
     }
 
     private Advogado descriptografarAdvogado(Advogado advogado) {
-        PrivateKey chavePrivada = advogado.getChave().getChavePrivada();
-        advogado.setNome(CriptografiaService.decriptar(advogado.getNome(), chavePrivada));
-        advogado.setCpf(CriptografiaService.decriptar(advogado.getCpf(), chavePrivada));
-        advogado.setOab(CriptografiaService.decriptar(advogado.getOab(), chavePrivada));
-        advogado.setEmail(CriptografiaService.decriptar(advogado.getEmail(), chavePrivada));
+        advogado.setNome(CriptografiaService.decriptar(advogado.getNome()));
+        advogado.setCpf(CriptografiaService.decriptar(advogado.getCpf()));
+        advogado.setOab(CriptografiaService.decriptar(advogado.getOab()));
+        advogado.setEmail(CriptografiaService.decriptar(advogado.getEmail()));
         return advogado;
     }
 }

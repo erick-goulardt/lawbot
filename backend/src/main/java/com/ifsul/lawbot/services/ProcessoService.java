@@ -4,7 +4,6 @@ import com.ifsul.lawbot.dto.processo.CadastrarProcessoRequest;
 import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Advogado;
-import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.entities.Processo;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
@@ -14,7 +13,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.PrivateKey;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,28 +30,16 @@ public class ProcessoService {
     private AdvogadoRepository advogadoRepository;
 
     @Autowired
-    private GerarChaveService gerarChaveService;
-
-    @Autowired
     private ClienteRepository clienteRepository;
 
     public Processo cadastra(CadastrarProcessoRequest dados, Cliente cliente, Advogado advogado){
         Processo processo = Processo.builder().build();
-        Chave key = gerarChaveService.findKey();
         processo.setAdvogado(advogado);
         processo.setCliente(cliente);
-        processo.setStatus(encriptar(dados.status(), key.getChavePublica()));
+        processo.setStatus(encriptar(dados.status()));
         processo.setDataAtualizacao(dados.dataAtualizacao());
-        processo.setDescricao(encriptar(dados.descricao(), key.getChavePublica()));
-        processo.setChave(key);
+        processo.setDescricao(encriptar(dados.descricao()));
 
-        return processo;
-    }
-
-    public Processo descriptografarLista(Processo processo){
-        processo = descriptografarProcesso(processo);
-        processo.getAdvogado().setNome(decriptar(processo.getAdvogado().getNome(), processo.getAdvogado().getChave().getChavePrivada()));
-        processo.getCliente().setNome(decriptar(processo.getCliente().getNome(), processo.getCliente().getChave().getChavePrivada()));
         return processo;
     }
 
@@ -71,13 +57,11 @@ public class ProcessoService {
     }
 
     public MessageDTO cadastrarProcessoComClienteNovo(CadastrarProcessoRequest dados){
-        Chave key = gerarChaveService.findKey();
 
         Cliente cliente = new Cliente(dados.cliente());
-        cliente.setChave(key);
 
         Cliente encriptado = new Cliente(encriptarCliente(cliente));
-        System.out.println("nome: " + decriptar(encriptado.getNome(), encriptado.getChave().getChavePrivada()));
+        System.out.println("nome: " + decriptar(encriptado.getNome()));
         clienteRepository.save(encriptado);
 
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
@@ -99,29 +83,26 @@ public class ProcessoService {
     }
 
     private Processo descriptografarProcesso(Processo processo){
-        PrivateKey chaveProcesso = processo.getChave().getChavePrivada();
-        processo.setDescricao(decriptar(processo.getDescricao(), chaveProcesso));
-        processo.setStatus(decriptar(processo.getStatus(), chaveProcesso));
+        processo.setDescricao(decriptar(processo.getDescricao()));
+        processo.setStatus(decriptar(processo.getStatus()));
         processo.setAdvogado(descriptografarAdvogado(processo.getAdvogado()));
         processo.setCliente(descriptografarCliente(processo.getCliente()));
         return processo;
     }
 
     private Advogado descriptografarAdvogado(Advogado advogado) {
-        PrivateKey chavePrivada = advogado.getChave().getChavePrivada();
-        advogado.setNome(decriptar(advogado.getNome(), chavePrivada));
-        advogado.setCpf(decriptar(advogado.getCpf(), chavePrivada));
-        advogado.setOab(decriptar(advogado.getOab(), chavePrivada));
-        advogado.setEmail(decriptar(advogado.getEmail(), chavePrivada));
+        advogado.setNome(decriptar(advogado.getNome()));
+        advogado.setCpf(decriptar(advogado.getCpf()));
+        advogado.setOab(decriptar(advogado.getOab()));
+        advogado.setEmail(decriptar(advogado.getEmail()));
         System.out.println(advogado);
         return advogado;
     }
 
     private Cliente descriptografarCliente(Cliente cliente) {
-        PrivateKey chavePrivada = cliente.getChave().getChavePrivada();
-        cliente.setNome(decriptar(cliente.getNome(), chavePrivada));
-        cliente.setCpf(decriptar(cliente.getCpf(), chavePrivada));
-        cliente.setEmail(decriptar(cliente.getEmail(), chavePrivada));
+        cliente.setNome(decriptar(cliente.getNome()));
+        cliente.setCpf(decriptar(cliente.getCpf()));
+        cliente.setEmail(decriptar(cliente.getEmail()));
         return cliente;
     }
 }

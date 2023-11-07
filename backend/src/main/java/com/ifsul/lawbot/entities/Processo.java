@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Optional;
-
-import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
 
 @Getter
 @Setter
@@ -31,5 +28,8 @@ public class Processo {
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String descricao;
+    @ManyToOne
+    @JoinColumn(name = "chave_id")
+    private Chave chave;
 }
 

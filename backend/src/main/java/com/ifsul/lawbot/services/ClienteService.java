@@ -5,11 +5,13 @@ import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
+import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.PrivateKey;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,9 @@ public class ClienteService {
     @Autowired
     private ClienteRepository repository;
 
+    @Autowired
+    private GerarChaveService gerarChaveService;
+
     public MessageDTO encriptarCliente(CadastrarClienteRequest dados) {
         Cliente cliente = Cliente.builder().build();
 
@@ -28,16 +33,18 @@ public class ClienteService {
         cliente.setSenha(
                 HashSenhasService.hash(dados.senha())
         );
+        Chave key = gerarChaveService.findKey();
         cliente.setNome(
-                encriptar(dados.nome())
+                encriptar(dados.nome(), key.getChavePublica())
         );
         cliente.setEmail(
-                encriptar(dados.email())
+                encriptar(dados.email(), key.getChavePublica())
         );
         cliente.setCpf(
-                encriptar(dados.cpf())
+                encriptar(dados.cpf(), key.getChavePublica())
         );
 
+        cliente.setChave(key);
         repository.save(cliente);
         return new MessageDTO("Usuário cadastrado!");
     }
@@ -57,10 +64,10 @@ public class ClienteService {
             cliente.setSenha(HashSenhasService.hash(dados.senha()));
         }
         if( dados.email() != null){
-            cliente.setEmail(encriptar(dados.email()));
+            cliente.setEmail(encriptar(dados.email(), cliente.getChave().getChavePublica()));
         }
         if( dados.nome() != null){
-            cliente.setNome(encriptar(dados.nome()));
+            cliente.setNome(encriptar(dados.nome(), cliente.getChave().getChavePublica()));
         }
 
         repository.save(cliente);
@@ -83,14 +90,15 @@ public class ClienteService {
     }
 
     private Cliente descriptografarCliente(Cliente cliente) {
-        cliente.setNome(CriptografiaService.decriptar(cliente.getNome()));
-        cliente.setCpf(CriptografiaService.decriptar(cliente.getCpf()));
-        cliente.setEmail(CriptografiaService.decriptar(cliente.getEmail()));
+        PrivateKey chavePrivada = cliente.getChave().getChavePrivada();
+        cliente.setNome(CriptografiaService.decriptar(cliente.getNome(), chavePrivada));
+        cliente.setCpf(CriptografiaService.decriptar(cliente.getCpf(), chavePrivada));
+        cliente.setEmail(CriptografiaService.decriptar(cliente.getEmail(), chavePrivada));
         return cliente;
     }
 
     static public Cliente encriptarCliente(Cliente c) {
-
+        Chave key = c.getChave();
 
         Cliente cliente = new Cliente();
 
@@ -99,14 +107,15 @@ public class ClienteService {
                 HashSenhasService.hash(c.getSenha())
         );
         cliente.setNome(
-                encriptar(c.getNome())
+                encriptar(c.getNome(), key.getChavePublica())
         );
         cliente.setEmail(
-                encriptar(c.getEmail())
+                encriptar(c.getEmail(), key.getChavePublica())
         );
         cliente.setCpf(
-                encriptar(c.getCpf())
+                encriptar(c.getCpf(), key.getChavePublica())
         );
+        cliente.setChave(c.getChave());
         return cliente;
     }
 }

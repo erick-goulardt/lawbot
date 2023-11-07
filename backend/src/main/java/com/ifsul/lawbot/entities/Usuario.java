@@ -37,6 +37,10 @@ public abstract class Usuario implements UserDetails {
     private String cpf;
     private LocalDate dataNascimento;
 
+    @ManyToOne
+    @JoinColumn(name = "chave_id")
+    private Chave chave;
+
     public Usuario(CadastrarAdvogadoRequest dados) {
         this.nome = dados.nome();
         this.email = dados.email();

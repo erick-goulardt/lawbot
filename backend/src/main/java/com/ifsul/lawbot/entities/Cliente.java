@@ -1,7 +1,9 @@
 package com.ifsul.lawbot.entities;
 
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,6 +41,7 @@ public class Cliente extends Usuario{
         this.setSenha(cliente.getSenha());
         this.setProcessos(cliente.getProcessos());
         this.setEmail(cliente.getEmail());
+        this.setChave(cliente.getChave());
     }
 
 }

@@ -12,24 +12,31 @@ import java.security.PublicKey;
 import java.util.Base64;
 
 public class CriptografiaService {
+    public static final String ALGORITHM = "RSA";
+    public static final int KEY_SIZE = 2048;
 
-    public static String encriptar(String plaintext) {
+    public static String encriptar(String plaintext, PublicKey publicKey) {
         try {
-            Base64.Encoder enc = Base64.getEncoder();
-            byte[] encryptedBytes = enc.encode(plaintext.getBytes());
-            return new String(encryptedBytes);
-        } catch (Exception e) {
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes());
+            return Base64.getEncoder().encodeToString(encryptedBytes);
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException |
+                 IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static String decriptar(String ciphertext) {
+    public static String decriptar(String ciphertext, PrivateKey privateKey) {
         try {
-            Base64.Decoder dec = Base64.getDecoder();
-            byte[] decryptedBytes = dec.decode(ciphertext);
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] decodedBytes = Base64.getDecoder().decode(ciphertext);
+            byte[] decryptedBytes = cipher.doFinal(decodedBytes);
             return new String(decryptedBytes);
-        } catch (Exception e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException |
+                 IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
         return null;

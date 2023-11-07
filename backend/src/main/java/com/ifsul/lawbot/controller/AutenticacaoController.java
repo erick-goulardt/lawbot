@@ -4,7 +4,6 @@ import com.ifsul.lawbot.dto.auth.AutenticarRequest;
 import com.ifsul.lawbot.dto.utils.DadosTokenJWT;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Cliente;
-import com.ifsul.lawbot.entities.Usuario;
 import com.ifsul.lawbot.security.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

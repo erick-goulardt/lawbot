@@ -25,13 +25,13 @@ public class AutenticacaoService implements UserDetailsService {
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         try{
             return advogadoRepository.findAll().stream().filter(usuario ->
-                    Objects.equals(decriptar(usuario.getUsername()), login)
+                    Objects.equals(decriptar(usuario.getUsername(), usuario.getChave().getChavePrivada()), login)
             ).toList().stream().findFirst().get();
         }
         catch (Exception ex){
             try{
                 return clienteRepository.findAll().stream().filter(usuario ->
-                        Objects.equals(decriptar(usuario.getUsername()), login)
+                        Objects.equals(decriptar(usuario.getUsername(), usuario.getChave().getChavePrivada()), login)
                 ).toList().stream().findFirst().get();
             }
             catch (Exception exception){

@@ -38,4 +38,12 @@ public class ProcessoController {
         var response = service.listarProcessos();
         return ResponseEntity.status(200).body(response);
     }
+
+    @GetMapping("/advogado/{id}")
+    public List<ListarProcessosRequest> listarProcessosPeloAdvogado(@PathVariable Long id){
+        var response = service.listarPeloAdvogado(id);
+        return response;
+    }
+
+
 }

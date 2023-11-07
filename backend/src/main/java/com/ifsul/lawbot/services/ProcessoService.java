@@ -66,6 +66,8 @@ public class ProcessoService {
                 .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " + dados.advogado().getId()));
 
         Processo processo = cadastra(dados, cliente, advogado);
+        advogado.getProcessos().add(processo);
+        cliente.getProcessos().add(processo);
         processoRepository.save(processo);
         return new MessageDTO("Processo cadastrado!");
     }
@@ -85,7 +87,8 @@ public class ProcessoService {
                         dados.advogado().getId()));
 
         Processo processo = cadastra(dados, encriptado, advogado);
-
+        advogado.getProcessos().add(processo);
+        cliente.getProcessos().add(processo);
         processoRepository.save(processo);
         return new MessageDTO("Processo cadastrado!");
     }
@@ -130,5 +133,13 @@ public class ProcessoService {
         novoCliente.setCpf(decriptar(cliente.getCpf(), chavePrivada));
         novoCliente.setEmail(decriptar(cliente.getEmail(), chavePrivada));
         return novoCliente;
+    }
+
+    public List<ListarProcessosRequest> listarPeloAdvogado(Long id){
+        List<Processo> processos = processoRepository.findAllByAdvogado_Id(id);
+        return processos.stream()
+                .map(this::descriptografarProcesso)
+                .map(ListarProcessosRequest::new)
+                .collect(Collectors.toList());
     }
 }

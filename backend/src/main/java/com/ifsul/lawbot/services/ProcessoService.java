@@ -76,10 +76,12 @@ public class ProcessoService {
 
     public List<ListarProcessosRequest> listarProcessos(){
         List<Processo> processos = processoRepository.findAll();
-        return processos.stream()
+        var response = processos.stream()
                 .map(this::descriptografarProcesso)
                 .map(ListarProcessosRequest::new)
                 .collect(Collectors.toList());
+        System.out.println();
+        return response;
     }
 
     private Processo descriptografarProcesso(Processo processo){
@@ -91,18 +93,23 @@ public class ProcessoService {
     }
 
     private Advogado descriptografarAdvogado(Advogado advogado) {
-        advogado.setNome(decriptar(advogado.getNome()));
-        advogado.setCpf(decriptar(advogado.getCpf()));
-        advogado.setOab(decriptar(advogado.getOab()));
-        advogado.setEmail(decriptar(advogado.getEmail()));
-        System.out.println(advogado);
-        return advogado;
+        Advogado novoAdvogado= new Advogado();
+
+        novoAdvogado.setNome(decriptar(advogado.getNome()));
+        novoAdvogado.setCpf(decriptar(advogado.getCpf()));
+        novoAdvogado.setOab(decriptar(advogado.getOab()));
+        novoAdvogado.setEmail(decriptar(advogado.getEmail()));
+
+        return novoAdvogado;
     }
 
     private Cliente descriptografarCliente(Cliente cliente) {
-        cliente.setNome(decriptar(cliente.getNome()));
-        cliente.setCpf(decriptar(cliente.getCpf()));
-        cliente.setEmail(decriptar(cliente.getEmail()));
-        return cliente;
+        Cliente novoCliente = new Cliente();
+
+        novoCliente.setNome(decriptar(cliente.getNome()));
+        novoCliente.setCpf(decriptar(cliente.getCpf()));
+        novoCliente.setEmail(decriptar(cliente.getEmail()));
+
+        return novoCliente;
     }
 }

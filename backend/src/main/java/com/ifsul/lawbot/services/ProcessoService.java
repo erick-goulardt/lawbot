@@ -108,20 +108,27 @@ public class ProcessoService {
     }
 
     private Advogado descriptografarAdvogado(Advogado advogado) {
-        PrivateKey chavePrivada = advogado.getChave().getChavePrivada();
-        advogado.setNome(decriptar(advogado.getNome(), chavePrivada));
-        advogado.setCpf(decriptar(advogado.getCpf(), chavePrivada));
-        advogado.setOab(decriptar(advogado.getOab(), chavePrivada));
-        advogado.setEmail(decriptar(advogado.getEmail(), chavePrivada));
-        System.out.println(advogado);
-        return advogado;
+        Advogado novoAdvogado = new Advogado();
+
+        novoAdvogado.setChave(advogado.getChave());
+        PrivateKey chavePrivada = novoAdvogado.getChave().getChavePrivada();
+
+        novoAdvogado.setNome(decriptar(advogado.getNome(), chavePrivada));
+        novoAdvogado.setCpf(decriptar(advogado.getCpf(), chavePrivada));
+        novoAdvogado.setOab(decriptar(advogado.getOab(), chavePrivada));
+        novoAdvogado.setEmail(decriptar(advogado.getEmail(), chavePrivada));
+        return novoAdvogado;
     }
 
     private Cliente descriptografarCliente(Cliente cliente) {
-        PrivateKey chavePrivada = cliente.getChave().getChavePrivada();
-        cliente.setNome(decriptar(cliente.getNome(), chavePrivada));
-        cliente.setCpf(decriptar(cliente.getCpf(), chavePrivada));
-        cliente.setEmail(decriptar(cliente.getEmail(), chavePrivada));
-        return cliente;
+        Cliente novoCliente = new Cliente();
+
+        novoCliente.setChave(cliente.getChave());
+        PrivateKey chavePrivada = novoCliente.getChave().getChavePrivada();
+
+        novoCliente.setNome(decriptar(cliente.getNome(), chavePrivada));
+        novoCliente.setCpf(decriptar(cliente.getCpf(), chavePrivada));
+        novoCliente.setEmail(decriptar(cliente.getEmail(), chavePrivada));
+        return novoCliente;
     }
 }

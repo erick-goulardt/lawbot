@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ProcessoRepository extends JpaRepository<Processo, Long> {
     List<Processo> findAllByAdvogado_Id(Long id);
+
+    List<Processo> findAllByCliente_Id(Long id);
 }

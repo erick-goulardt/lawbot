@@ -38,7 +38,7 @@ public class ProcessoService {
     private ClienteRepository clienteRepository;
 
     public Processo cadastra(CadastrarProcessoRequest dados, Cliente cliente, Advogado advogado){
-        Processo processo = Processo.builder().build();
+        Processo processo = new Processo();
         Chave key = gerarChaveService.findKey();
         processo.setAdvogado(advogado);
         processo.setCliente(cliente);
@@ -50,16 +50,9 @@ public class ProcessoService {
         return processo;
     }
 
-    public Processo descriptografarLista(Processo processo){
-        processo = descriptografarProcesso(processo);
-        processo.getAdvogado().setNome(decriptar(processo.getAdvogado().getNome(), processo.getAdvogado().getChave().getChavePrivada()));
-        processo.getCliente().setNome(decriptar(processo.getCliente().getNome(), processo.getCliente().getChave().getChavePrivada()));
-        return processo;
-    }
-
     public MessageDTO cadastrarProcesso(CadastrarProcessoRequest dados){
 
-        Cliente cliente = clienteRepository.findById(dados.advogado().getId())
+        Cliente cliente = clienteRepository.findById(dados.cliente().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + dados.cliente().getId()));
 
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
@@ -79,7 +72,6 @@ public class ProcessoService {
         cliente.setChave(key);
 
         Cliente encriptado = new Cliente(encriptarCliente(cliente));
-        System.out.println("nome: " + decriptar(encriptado.getNome(), encriptado.getChave().getChavePrivada()));
         clienteRepository.save(encriptado);
 
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
@@ -137,6 +129,14 @@ public class ProcessoService {
 
     public List<ListarProcessosRequest> listarPeloAdvogado(Long id){
         List<Processo> processos = processoRepository.findAllByAdvogado_Id(id);
+        return processos.stream()
+                .map(this::descriptografarProcesso)
+                .map(ListarProcessosRequest::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<ListarProcessosRequest> listarPeloCliente(Long id){
+        List<Processo> processos = processoRepository.findAllByCliente_Id(id);
         return processos.stream()
                 .map(this::descriptografarProcesso)
                 .map(ListarProcessosRequest::new)

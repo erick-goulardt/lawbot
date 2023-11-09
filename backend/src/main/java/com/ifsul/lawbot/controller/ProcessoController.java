@@ -45,5 +45,9 @@ public class ProcessoController {
         return response;
     }
 
-
+    @GetMapping("/cliente/{id}")
+    public List<ListarProcessosRequest> listarProcessosPeloCliente(@PathVariable Long id){
+        var response = service.listarPeloCliente(id);
+        return response;
+    }
 }

@@ -16,18 +16,38 @@ public class Processo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "advogado_id")
     private Advogado advogado;
+
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+
     @Column(columnDefinition = "LONGTEXT")
     private String status;
+
     private LocalDate dataAtualizacao;
-    @Lob
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String numeroProcesso;
+
     @Column(columnDefinition = "LONGTEXT")
     private String descricao;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String classe;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String localidade;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String assunto;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String ultimoEvento;
+
     @ManyToOne
     @JoinColumn(name = "chave_id")
     private Chave chave;

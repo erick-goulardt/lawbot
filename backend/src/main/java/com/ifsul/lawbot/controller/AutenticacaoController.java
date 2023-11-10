@@ -1,7 +1,7 @@
 package com.ifsul.lawbot.controller;
 
 import com.ifsul.lawbot.dto.auth.AutenticarRequest;
-import com.ifsul.lawbot.dto.utils.DadosTokenJWT;
+import com.ifsul.lawbot.dto.utils.TokenRequest;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.security.TokenService;
@@ -28,7 +28,7 @@ public class AutenticacaoController {
     public ResponseEntity efetuarLogin(@RequestBody @Valid AutenticarRequest dados){
         var authenticationToken = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
         var authentication = manager.authenticate(authenticationToken);
-        String tokenJWT = "";
+        TokenRequest tokenJWT = null;
         try{
             tokenJWT = tokenService.gerarToken((Advogado) authentication.getPrincipal());
         } catch (Exception ex){
@@ -38,6 +38,6 @@ public class AutenticacaoController {
                 exception.printStackTrace();
             }
         }
-        return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
+        return ResponseEntity.ok(new TokenRequest(tokenJWT));
     }
 }

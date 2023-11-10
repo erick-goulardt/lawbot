@@ -3,6 +3,7 @@ package com.ifsul.lawbot.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.ifsul.lawbot.dto.utils.TokenRequest;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Cliente;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,29 +18,33 @@ public class TokenService {
 
     @Value("${api.security.token.secret}")
     private String secret;
-    public String gerarToken(Cliente usuario){
+    public TokenRequest gerarToken(Cliente usuario){
         try {
             var algoritmo = Algorithm.HMAC256(secret);
-            return JWT.create()
+            var token = JWT.create()
                     .withIssuer("Lawbot")
                     .withSubject(usuario.getUsername())
                     .withClaim("id", usuario.getId())
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
+            var id = usuario.getId();
+            return new TokenRequest(token, id);
         } catch (JWTCreationException exception){
             throw new RuntimeException("erro ao gerar token jwt", exception);
         }
     }
 
-    public String gerarToken(Advogado usuario){
+    public TokenRequest gerarToken(Advogado usuario){
         try {
             var algoritmo = Algorithm.HMAC256(secret);
-            return JWT.create()
+            var token = JWT.create()
                     .withIssuer("Lawbot")
                     .withSubject(usuario.getUsername())
                     .withClaim("id", usuario.getId())
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
+            var id = usuario.getId();
+            return new TokenRequest(token, id);
         } catch (JWTCreationException exception){
             throw new RuntimeException("erro ao gerar token jwt", exception);
         }

@@ -4,7 +4,7 @@ import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
-import com.ifsul.lawbot.dto.utils.MessageDTO;
+import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
@@ -21,14 +21,26 @@ import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
 public class AdvogadoService {
 
     @Autowired
+    private ValidaDados valida;
+
+    @Autowired
     private AdvogadoRepository repository;
 
     @Autowired
     private GerarChaveService gerarChaveService;
 
-    public MessageDTO cadastrarAdvogado(CadastrarAdvogadoRequest dados) {
-        Advogado advogado = Advogado.builder().build();
+    public MensagemResponse cadastrarAdvogado(CadastrarAdvogadoRequest dados) {
+        Advogado advogado = new Advogado();
 
+        if(valida.emailAdvogado(dados.email())){
+            return new MensagemResponse("Email já cadastrado!", 409);
+        }
+        if(valida.CPFAdvogado(dados.cpf())){
+            return new MensagemResponse("CPF já cadastrado!", 409);
+        }
+        if(valida.OABAdvogado(dados.oab())){
+            return new MensagemResponse("OAB já cadastrada!", 409);
+        }
         advogado.setDataNascimento(dados.dataNascimento());
         advogado.setSenha(HashSenhasService.hash(dados.senha())
         );
@@ -48,7 +60,7 @@ public class AdvogadoService {
         );
         advogado.setChave(key);
         repository.save(advogado);
-        return new MessageDTO("Usuário cadastrado!");
+        return new MensagemResponse("Usuário cadastrado!", 200);
     }
 
     public List<ListarAdvogadoRequest> listarAdvogados() {
@@ -59,13 +71,16 @@ public class AdvogadoService {
                 .collect(Collectors.toList());
     }
 
-    public Advogado editarAdvogado(Long advogadoId, EditarAdvogadoRequest dados){
+    public MensagemResponse editarAdvogado(Long advogadoId, EditarAdvogadoRequest dados){
         var advogado = repository.getReferenceById(advogadoId);
 
         if ( dados.senha() != null) {
             advogado.setSenha(HashSenhasService.hash(dados.senha()));
         }
         if( dados.email() != null){
+            if(valida.emailAdvogado(dados.email())){
+                return new MensagemResponse("Email já cadastrado!", 409);
+            }
             advogado.setEmail(CriptografiaService.encriptar(dados.email(), advogado.getChave().getChavePublica()));
         }
         if( dados.nome() != null){
@@ -73,13 +88,13 @@ public class AdvogadoService {
         }
 
         repository.save(advogado);
-        return advogado;
+        return new MensagemResponse("Advogado atualizado!", 200);
     }
 
-    public MessageDTO deletarAdvogado(Long id){
+    public MensagemResponse deletarAdvogado(Long id){
         var advogado = repository.getReferenceById(id);
         repository.delete(advogado);
-        return new MessageDTO("Deletado com sucesso!");
+        return new MensagemResponse("Deletado com sucesso!", 200);
     }
 
     public DetalharAdvogadoRequest detalharAdvogado(Long id) {

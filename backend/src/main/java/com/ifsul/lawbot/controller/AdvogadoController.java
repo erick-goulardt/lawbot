@@ -5,7 +5,6 @@ import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
-import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.services.AdvogadoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class AdvogadoController {
     @Transactional
     public ResponseEntity<MessageDTO> cadastrarAdvogado(@RequestBody @Valid CadastrarAdvogadoRequest dados){
         var response = service.cadastrarAdvogado(dados);
-        return ResponseEntity.status(200).body(response);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response.mensagem()));
     }
 
     @GetMapping("/buscarTodos")
@@ -38,15 +37,15 @@ public class AdvogadoController {
     @PutMapping("/editar/{advogadoId}")
     @Transactional
     public ResponseEntity<?> editarAdvogado(@PathVariable Long advogadoId, @RequestBody @Valid EditarAdvogadoRequest dados){
-        Advogado advogadoUpdated = service.editarAdvogado(advogadoId, dados);
-        return ResponseEntity.status(200).body("Advogado atualizado!");
+        var response = service.editarAdvogado(advogadoId, dados);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response));
     }
 
     @DeleteMapping("/deletar/{id}")
     @Transactional
     public ResponseEntity<MessageDTO> deletarAdvogado(@PathVariable Long id){
-        service.deletarAdvogado(id);
-        return ResponseEntity.status(200).body(new MessageDTO(("Deletado com sucesso!")));
+        var response = service.deletarAdvogado(id);
+        return ResponseEntity.status(response.status()).body(new MessageDTO((response)));
     }
 
     @GetMapping("/info/{id}")

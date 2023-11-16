@@ -24,8 +24,9 @@ public class ClienteController {
 
     @PostMapping("/cadastro")
     @Transactional
-    public MessageDTO cadastrarCliente(@RequestBody @Valid CadastrarClienteRequest dados){
-        return service.encriptarCliente(dados);
+    public ResponseEntity<MessageDTO> cadastrarCliente(@RequestBody @Valid CadastrarClienteRequest dados){
+        var response = service.cadastrarCliente(dados);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response.mensagem()));
     }
 
     @GetMapping("/buscarTodos")
@@ -37,8 +38,8 @@ public class ClienteController {
     @PutMapping("/editar/{clienteId}")
     @Transactional
     public ResponseEntity<?> editarCliente(@PathVariable Long clienteId, @RequestBody @Valid EditarClienteRequest dados){
-        Cliente clienteAtualizado = service.editarCliente(clienteId, dados);
-        return ResponseEntity.status(200).body("Cliente atualizado!");
+        var response = service.editarCliente(clienteId, dados);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response.mensagem()));
     }
 
     @DeleteMapping("/{id}")

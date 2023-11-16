@@ -18,7 +18,7 @@ import java.security.PrivateKey;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ifsul.lawbot.services.ClienteService.encriptarCliente;
+import static com.ifsul.lawbot.services.ClienteService.cadastrarCliente;
 import static com.ifsul.lawbot.services.CriptografiaService.decriptar;
 import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
 
@@ -71,7 +71,7 @@ public class ProcessoService {
         Cliente cliente = new Cliente(dados.cliente());
         cliente.setChave(key);
 
-        Cliente encriptado = new Cliente(encriptarCliente(cliente));
+        Cliente encriptado = new Cliente(cadastrarCliente(cliente));
         clienteRepository.save(encriptado);
 
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())

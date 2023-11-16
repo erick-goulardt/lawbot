@@ -4,6 +4,7 @@ import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
+import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Cliente;
@@ -21,13 +22,24 @@ import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
 public class ClienteService {
 
     @Autowired
+    private ValidaDados valida;
+
+    @Autowired
     private ClienteRepository repository;
 
     @Autowired
     private GerarChaveService gerarChaveService;
 
-    public MessageDTO encriptarCliente(CadastrarClienteRequest dados) {
-        Cliente cliente = Cliente.builder().build();
+    public MensagemResponse cadastrarCliente(CadastrarClienteRequest dados) {
+        Cliente cliente = new Cliente();
+
+        if(valida.CPFCliente(dados.cpf())){
+            return new MensagemResponse("CPF já cadastrado!", 409);
+        }
+
+        if(valida.emailCliente(dados.email())){
+            return new MensagemResponse("Email já cadastrado!", 409);
+        }
 
         cliente.setDataNascimento(dados.dataNascimento());
         cliente.setSenha(
@@ -46,7 +58,7 @@ public class ClienteService {
 
         cliente.setChave(key);
         repository.save(cliente);
-        return new MessageDTO("Usuário cadastrado!");
+        return new MensagemResponse("Usuário cadastrado!", 200);
     }
 
     public List<ListarClienteRequest> listarClientes() {
@@ -57,13 +69,19 @@ public class ClienteService {
                 .collect(Collectors.toList());
     }
 
-    public Cliente editarCliente(Long clienteId, EditarClienteRequest dados){
+    public MensagemResponse editarCliente(Long clienteId, EditarClienteRequest dados){
         var cliente = repository.getReferenceById(clienteId);
 
         if ( dados.senha() != null) {
             cliente.setSenha(HashSenhasService.hash(dados.senha()));
         }
         if( dados.email() != null){
+            System.out.println("oi");
+            if(valida.emailCliente(dados.email())){
+                System.out.println("ENTROU!!");
+                return new MensagemResponse("Email já cadastrado!", 409);
+            }
+            System.out.println("SAIU");
             cliente.setEmail(encriptar(dados.email(), cliente.getChave().getChavePublica()));
         }
         if( dados.nome() != null){
@@ -71,7 +89,7 @@ public class ClienteService {
         }
 
         repository.save(cliente);
-        return cliente;
+        return new MensagemResponse("Cliente atualizado!", 200);
     }
 
     public MessageDTO deletarCliente(Long id){
@@ -97,7 +115,7 @@ public class ClienteService {
         return cliente;
     }
 
-    static public Cliente encriptarCliente(Cliente c) {
+    static public Cliente cadastrarCliente(Cliente c) {
         Chave key = c.getChave();
 
         Cliente cliente = new Cliente();

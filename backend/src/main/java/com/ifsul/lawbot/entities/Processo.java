@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -51,5 +52,13 @@ public class Processo {
     @ManyToOne
     @JoinColumn(name = "chave_id")
     private Chave chave;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private List<String> nomeReu;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private List<String> nomeAutor;
+
+    private boolean clienteDefinido;
 }
 

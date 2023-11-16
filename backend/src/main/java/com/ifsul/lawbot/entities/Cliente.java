@@ -2,6 +2,7 @@ package com.ifsul.lawbot.entities;
 
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;

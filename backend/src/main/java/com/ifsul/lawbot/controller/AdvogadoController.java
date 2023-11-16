@@ -5,6 +5,7 @@ import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
+import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.services.AdvogadoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +53,11 @@ public class AdvogadoController {
     public ResponseEntity<DetalharAdvogadoRequest> detalharAdvogado(@PathVariable Long id){
         var response = service.detalharAdvogado(id);
         return ResponseEntity.status(200).body(response);
+    }
+
+    @GetMapping("/listarClientes/{id}")
+    public List<Cliente> listarClientes(@PathVariable Long id){
+        var response = service.listarClientePorAdvogado(id);
+        return response;
     }
 }

@@ -60,7 +60,6 @@ public class ProcessoService {
 
         Processo processo = cadastra(dados, cliente, advogado);
         advogado.getProcessos().add(processo);
-        cliente.getProcessos().add(processo);
         processoRepository.save(processo);
         return new MessageDTO("Processo cadastrado!");
     }

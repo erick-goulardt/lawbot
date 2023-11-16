@@ -4,10 +4,13 @@ import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
+import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Chave;
+import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
+import com.ifsul.lawbot.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,9 @@ public class AdvogadoService {
 
     @Autowired
     private AdvogadoRepository repository;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Autowired
     private GerarChaveService gerarChaveService;
@@ -112,5 +118,22 @@ public class AdvogadoService {
         advogado.setOab(CriptografiaService.decriptar(advogado.getOab(), chavePrivada));
         advogado.setEmail(CriptografiaService.decriptar(advogado.getEmail(), chavePrivada));
         return advogado;
+    }
+
+//    public void definirCliente(Long idCliente, Long idAdvogado){
+//        var advogado = repository.findById(idAdvogado);
+//        System.out.println(advogado.get().getId());
+//        var c = clienteRepository.findById(idCliente);
+//        System.out.println(c.get().getId());
+//        advogado.get().getClientes().add(c.get());
+//        c.get().getAdvogados().add(advogado.get());
+//        repository.save(advogado.get());
+//        clienteRepository.save(c.get());
+//    }
+
+    public List<Cliente> listarClientePorAdvogado(Long id){
+        var advogado = repository.findById(id);
+
+        return advogado.get().getClientes();
     }
 }

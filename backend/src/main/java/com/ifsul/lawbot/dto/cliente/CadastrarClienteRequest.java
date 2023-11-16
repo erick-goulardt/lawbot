@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record CadastrarClienteRequest(
+        @NotNull
+        Long idAdvogado,
         @NotBlank
         String nome,
         @NotBlank

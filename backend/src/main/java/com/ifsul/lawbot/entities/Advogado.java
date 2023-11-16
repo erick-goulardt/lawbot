@@ -1,11 +1,9 @@
 package com.ifsul.lawbot.entities;
 
+import ch.qos.logback.core.net.server.Client;
 import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -18,6 +16,7 @@ import java.util.List;
 @Builder
 public class Advogado extends Usuario {
 
+     private List<Cliente> clientes;
 
      @OneToMany(mappedBy = "advogado")
      private List<Processo> processos;

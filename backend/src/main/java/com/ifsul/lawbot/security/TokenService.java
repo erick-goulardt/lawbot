@@ -25,7 +25,7 @@ public class TokenService {
             var username = decriptar(usuario.getUsername(), usuario.getChave().getChavePrivada());
             var algoritmo = Algorithm.HMAC256(secret);
             var token = JWT.create()
-                    .withIssuer("Lawbot")
+                    .withIssuer("Lawbot - Cliente")
                     .withSubject(username)
                     .withClaim("id", usuario.getId())
                     .withExpiresAt(dataExpiracao())
@@ -42,7 +42,7 @@ public class TokenService {
             var username = decriptar(usuario.getUsername(), usuario.getChave().getChavePrivada());
             var algoritmo = Algorithm.HMAC256(secret);
             var token = JWT.create()
-                    .withIssuer("Lawbot")
+                    .withIssuer("Lawbot - Advogado")
                     .withSubject(username)
                     .withClaim("id", usuario.getId())
                     .withExpiresAt(dataExpiracao())

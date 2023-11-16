@@ -13,6 +13,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import static com.ifsul.lawbot.services.CriptografiaService.decriptar;
+
 @Service
 public class TokenService {
 
@@ -20,10 +22,11 @@ public class TokenService {
     private String secret;
     public TokenRequest gerarToken(Cliente usuario){
         try {
+            var username = decriptar(usuario.getUsername(), usuario.getChave().getChavePrivada());
             var algoritmo = Algorithm.HMAC256(secret);
             var token = JWT.create()
                     .withIssuer("Lawbot")
-                    .withSubject(usuario.getUsername())
+                    .withSubject(username)
                     .withClaim("id", usuario.getId())
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
@@ -36,10 +39,11 @@ public class TokenService {
 
     public TokenRequest gerarToken(Advogado usuario){
         try {
+            var username = decriptar(usuario.getUsername(), usuario.getChave().getChavePrivada());
             var algoritmo = Algorithm.HMAC256(secret);
             var token = JWT.create()
                     .withIssuer("Lawbot")
-                    .withSubject(usuario.getUsername())
+                    .withSubject(username)
                     .withClaim("id", usuario.getId())
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);

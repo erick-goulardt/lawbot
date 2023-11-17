@@ -129,13 +129,11 @@ public class AdvogadoService {
     }
 
     public List<ListarClienteRequest> listarClientesDoAdvogado(Long id){
-        System.out.println("Entrou no método");
-        List<Processo> processos = processoRepository.findAllByAdvogado_Id(id);
-        List<ListarClienteRequest> clientes = new ArrayList<>();
-        for(Processo p : processos){
-            Cliente c = descriptografarCliente(p.getCliente());
-            clientes.add(new ListarClienteRequest(c));
-        }
+        var advogado = repository.findById(id);
+        var clientes = advogado.get().getClientes()
+                .stream().map(this::descriptografarCliente)
+                .map(ListarClienteRequest::new)
+                .collect(Collectors.toList());
         return clientes;
     }
 
@@ -151,5 +149,12 @@ public class AdvogadoService {
         novoCliente.setCpf(decriptar(cliente.getCpf(), chavePrivada));
         novoCliente.setEmail(decriptar(cliente.getEmail(), chavePrivada));
         return novoCliente;
+    }
+
+    public void definirCliente(Long idCliente, Long idAdvogado) {
+        var advogado = repository.findById(idAdvogado);
+        var cliente = clienteRepository.findById(idCliente);
+        advogado.get().getClientes().add(cliente.get());
+        cliente.get().getAdvogados().add(advogado.get());
     }
 }

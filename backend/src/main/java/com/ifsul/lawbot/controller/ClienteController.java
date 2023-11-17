@@ -4,6 +4,7 @@ import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
+import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.services.ClienteService;

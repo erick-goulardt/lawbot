@@ -6,6 +6,7 @@ import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 @Getter
 @Setter
@@ -14,6 +15,9 @@ import java.util.List;
 @Entity
 @Table(name = "advogado")
 public class Advogado extends Usuario {
+
+     @ManyToMany(mappedBy = "advogados")
+     private List<Cliente> clientes = new ArrayList<>();
 
      @OneToMany(mappedBy = "advogado")
      private List<Processo> processos;

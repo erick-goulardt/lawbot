@@ -60,7 +60,6 @@ public class AdvogadoController {
     public ResponseEntity listarClientes(@PathVariable Long id){
         System.out.println("OIEEEEE");
         var response = service.listarClientesDoAdvogado(id);
-        System.out.println("Saiu do metodo!");
         return ResponseEntity.status(200).body(response);
     }
 }

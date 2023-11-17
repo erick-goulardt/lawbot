@@ -91,6 +91,8 @@ public class ProcessoService {
         processoRepository.save(processo);
         advogado.getProcessos().add(processo);
         encriptado.getProcessos().add(processo);
+        advogado.getClientes().add(encriptado);
+        encriptado.getAdvogados().add(advogado);
         return new MensagemResponse("Processo cadastrado!", 200);
     }
 

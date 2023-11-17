@@ -30,7 +30,7 @@ public class ProcessoController {
     @Transactional
     public ResponseEntity<MessageDTO> cadastrarProcessoECliente(@RequestBody @Valid CadastrarProcessoRequest dados){
         var response = service.cadastrarProcessoComClienteNovo(dados);
-        return ResponseEntity.status(200).body(response);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response));
     }
 
     @GetMapping("/buscarTodos")

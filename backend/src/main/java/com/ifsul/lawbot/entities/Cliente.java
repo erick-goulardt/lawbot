@@ -35,7 +35,6 @@ public class Cliente extends Usuario{
     }
 
     public Cliente (Cliente cliente){
-        this.setId(cliente.getId());
         this.setDataNascimento(cliente.getDataNascimento());
         this.setNome(cliente.getNome());
         this.setCpf(cliente.getCpf());

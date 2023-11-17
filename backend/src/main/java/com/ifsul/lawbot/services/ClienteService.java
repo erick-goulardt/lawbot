@@ -23,7 +23,7 @@ import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
 public class ClienteService {
 
     @Autowired
-    private ValidaDados valida;
+    private static ValidaDados valida;
 
     @Autowired
     private AdvogadoRepository advogadoRepository;
@@ -127,25 +127,4 @@ public class ClienteService {
         return cliente;
     }
 
-    static public Cliente cadastrarCliente(Cliente c) {
-        Chave key = c.getChave();
-
-        Cliente cliente = new Cliente();
-
-        cliente.setDataNascimento(c.getDataNascimento());
-        cliente.setSenha(
-                HashSenhasService.hash(c.getSenha())
-        );
-        cliente.setNome(
-                encriptar(c.getNome(), key.getChavePublica())
-        );
-        cliente.setEmail(
-                encriptar(c.getEmail(), key.getChavePublica())
-        );
-        cliente.setCpf(
-                encriptar(c.getCpf(), key.getChavePublica())
-        );
-        cliente.setChave(c.getChave());
-        return cliente;
-    }
 }

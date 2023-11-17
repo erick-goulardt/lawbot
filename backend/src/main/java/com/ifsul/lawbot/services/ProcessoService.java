@@ -2,6 +2,7 @@ package com.ifsul.lawbot.services;
 
 import com.ifsul.lawbot.dto.processo.CadastrarProcessoRequest;
 import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
+import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Chave;
@@ -19,12 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ifsul.lawbot.services.ClienteService.cadastrarCliente;
 import static com.ifsul.lawbot.services.CriptografiaService.decriptar;
 import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
 
 @Service
 public class ProcessoService {
+
+    @Autowired
+    private ValidaDados valida;
 
     @Autowired
     private ProcessoRepository processoRepository;
@@ -65,13 +68,22 @@ public class ProcessoService {
         return new MessageDTO("Processo cadastrado!");
     }
 
-    public MessageDTO cadastrarProcessoComClienteNovo(CadastrarProcessoRequest dados){
+    public MensagemResponse cadastrarProcessoComClienteNovo(CadastrarProcessoRequest dados){
         Chave key = gerarChaveService.findKey();
 
+        if(valida.emailCliente(dados.cliente().getEmail())){
+            return new MensagemResponse("Email já cadastrado!", 409);
+        }
+        if(valida.CPFCliente(dados.cliente().getCpf())){
+            return new MensagemResponse("CPF já cadastrado!", 409);
+        }
         Cliente cliente = new Cliente(dados.cliente());
         cliente.setChave(key);
 
         Cliente encriptado = new Cliente(cadastrarCliente(cliente));
+        if(encriptado == null){
+            return new MensagemResponse("CPF ou Email já cadastrado!", 409);
+        }
         clienteRepository.save(encriptado);
 
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
@@ -82,7 +94,7 @@ public class ProcessoService {
         processoRepository.save(processo);
         advogado.getProcessos().add(processo);
         encriptado.getProcessos().add(processo);
-        return new MessageDTO("Processo cadastrado!");
+        return new MensagemResponse("Processo cadastrado!", 200);
     }
 
     public List<ListarProcessosRequest> listarProcessos(){
@@ -141,5 +153,28 @@ public class ProcessoService {
                 .map(this::descriptografarProcesso)
                 .map(ListarProcessosRequest::new)
                 .collect(Collectors.toList());
+    }
+
+    public Cliente cadastrarCliente(Cliente c) {
+        Chave key = c.getChave();
+
+        Cliente cliente = new Cliente();
+
+        cliente.setDataNascimento(c.getDataNascimento());
+        cliente.setSenha(
+                HashSenhasService.hash(c.getSenha())
+        );
+        cliente.setNome(
+                encriptar(c.getNome(), key.getChavePublica())
+        );
+        cliente.setEmail(
+                encriptar(c.getEmail(), key.getChavePublica())
+        );
+        cliente.setCpf(
+                encriptar(c.getCpf(), key.getChavePublica())
+        );
+        cliente.setChave(c.getChave());
+
+        return cliente;
     }
 }

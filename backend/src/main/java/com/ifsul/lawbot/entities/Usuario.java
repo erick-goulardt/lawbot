@@ -1,5 +1,6 @@
 package com.ifsul.lawbot.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;

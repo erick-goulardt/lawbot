@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,9 +79,9 @@ public class ProcessoService {
                         dados.advogado().getId()));
 
         Processo processo = cadastra(dados, encriptado, advogado);
-        advogado.getProcessos().add(processo);
-        cliente.getProcessos().add(processo);
         processoRepository.save(processo);
+        advogado.getProcessos().add(processo);
+        encriptado.getProcessos().add(processo);
         return new MessageDTO("Processo cadastrado!");
     }
 

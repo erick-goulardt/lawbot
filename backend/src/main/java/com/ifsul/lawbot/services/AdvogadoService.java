@@ -5,19 +5,24 @@ import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
+import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
 import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Cliente;
+import com.ifsul.lawbot.entities.Processo;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import com.ifsul.lawbot.repositories.ClienteRepository;
+import com.ifsul.lawbot.repositories.ProcessoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ifsul.lawbot.services.CriptografiaService.decriptar;
 import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
 
 @Service
@@ -25,6 +30,9 @@ public class AdvogadoService {
 
     @Autowired
     private ValidaDados valida;
+
+    @Autowired
+    private ProcessoRepository processoRepository;
 
     @Autowired
     private AdvogadoRepository repository;
@@ -120,20 +128,28 @@ public class AdvogadoService {
         return advogado;
     }
 
-//    public void definirCliente(Long idCliente, Long idAdvogado){
-//        var advogado = repository.findById(idAdvogado);
-//        System.out.println(advogado.get().getId());
-//        var c = clienteRepository.findById(idCliente);
-//        System.out.println(c.get().getId());
-//        advogado.get().getClientes().add(c.get());
-//        c.get().getAdvogados().add(advogado.get());
-//        repository.save(advogado.get());
-//        clienteRepository.save(c.get());
-//    }
+    public List<ListarClienteRequest> listarClientesDoAdvogado(Long id){
+        System.out.println("Entrou no método");
+        List<Processo> processos = processoRepository.findAllByAdvogado_Id(id);
+        List<ListarClienteRequest> clientes = new ArrayList<>();
+        for(Processo p : processos){
+            Cliente c = descriptografarCliente(p.getCliente());
+            clientes.add(new ListarClienteRequest(c));
+        }
+        return clientes;
+    }
 
-    public List<Cliente> listarClientePorAdvogado(Long id){
-        var advogado = repository.findById(id);
+    private Cliente descriptografarCliente(Cliente cliente) {
+        Cliente novoCliente = new Cliente();
 
-        return advogado.get().getClientes();
+        novoCliente.setId(cliente.getId());
+
+        novoCliente.setChave(cliente.getChave());
+        PrivateKey chavePrivada = novoCliente.getChave().getChavePrivada();
+
+        novoCliente.setNome(decriptar(cliente.getNome(), chavePrivada));
+        novoCliente.setCpf(decriptar(cliente.getCpf(), chavePrivada));
+        novoCliente.setEmail(decriptar(cliente.getEmail(), chavePrivada));
+        return novoCliente;
     }
 }

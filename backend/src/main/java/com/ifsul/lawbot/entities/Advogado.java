@@ -13,10 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "advogado")
-@Builder
 public class Advogado extends Usuario {
-
-     private List<Cliente> clientes;
 
      @OneToMany(mappedBy = "advogado")
      private List<Processo> processos;

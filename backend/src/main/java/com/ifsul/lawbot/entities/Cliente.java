@@ -9,6 +9,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "cliente")
-@Builder
 public class Cliente extends Usuario{
 
     @OneToMany(mappedBy = "cliente")
@@ -45,4 +45,10 @@ public class Cliente extends Usuario{
         this.setChave(cliente.getChave());
     }
 
+    public List<Processo> getProcessos() {
+        if(processos == null){
+            processos = new ArrayList<>();
+        }
+        return processos;
+    }
 }

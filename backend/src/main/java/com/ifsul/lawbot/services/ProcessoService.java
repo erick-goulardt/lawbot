@@ -81,9 +81,6 @@ public class ProcessoService {
         cliente.setChave(key);
 
         Cliente encriptado = new Cliente(cadastrarCliente(cliente));
-        if(encriptado == null){
-            return new MensagemResponse("CPF ou Email já cadastrado!", 409);
-        }
         clienteRepository.save(encriptado);
 
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())

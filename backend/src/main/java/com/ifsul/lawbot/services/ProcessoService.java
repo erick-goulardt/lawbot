@@ -106,11 +106,15 @@ public class ProcessoService {
 
     private Processo descriptografarProcesso(Processo processo){
         PrivateKey chaveProcesso = processo.getChave().getChavePrivada();
-        processo.setDescricao(decriptar(processo.getDescricao(), chaveProcesso));
-        processo.setStatus(decriptar(processo.getStatus(), chaveProcesso));
-        processo.setAdvogado(descriptografarAdvogado(processo.getAdvogado()));
-        processo.setCliente(descriptografarCliente(processo.getCliente()));
-        return processo;
+        Processo p = new Processo();
+
+        p.setId(processo.getId());
+        p.setDataAtualizacao(processo.getDataAtualizacao());
+        p.setDescricao(decriptar(processo.getDescricao(), chaveProcesso));
+        p.setStatus(decriptar(processo.getStatus(), chaveProcesso));
+        p.setAdvogado(descriptografarAdvogado(processo.getAdvogado()));
+        p.setCliente(descriptografarCliente(processo.getCliente()));
+        return p;
     }
 
     private Advogado descriptografarAdvogado(Advogado advogado) {

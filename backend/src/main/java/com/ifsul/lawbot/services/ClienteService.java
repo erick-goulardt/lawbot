@@ -132,6 +132,7 @@ public class ClienteService {
         PrivateKey chavePrivada = cliente.getChave().getChavePrivada();
         Cliente c = new Cliente();
 
+        c.setId(cliente.getId());
         c.setNome(CriptografiaService.decriptar(cliente.getNome(), chavePrivada));
         c.setCpf(CriptografiaService.decriptar(cliente.getCpf(), chavePrivada));
         c.setEmail(CriptografiaService.decriptar(cliente.getEmail(), chavePrivada));

@@ -13,7 +13,7 @@ public record ListarProcessosRequest(
         String descricao
 ) {
     public ListarProcessosRequest(Processo processo) {
-        this(processo.getId(), processo.getAdvogado().getNome(), processo.getCliente().getNome(), processo.getStatus(),
+        this(processo.getId(), processo.getAdvogado().getNome(), processo.getCliente().getNome(), processo.getUltimoEvento(),
                 processo.getDataAtualizacao(), processo.getDescricao());
     }
 

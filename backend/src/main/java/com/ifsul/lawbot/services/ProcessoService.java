@@ -11,12 +11,12 @@ import com.ifsul.lawbot.entities.Processo;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import com.ifsul.lawbot.repositories.ClienteRepository;
 import com.ifsul.lawbot.repositories.ProcessoRepository;
+import com.ifsul.lawbot.util.ValidaDados;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.PrivateKey;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,9 +46,15 @@ public class ProcessoService {
         Chave key = gerarChaveService.findKey();
         processo.setAdvogado(advogado);
         processo.setCliente(cliente);
-        processo.setStatus(encriptar(dados.status(), key.getChavePublica()));
+        processo.setUltimoEvento(encriptar(dados.ultimoEvento(), key.getChavePublica()));
         processo.setDataAtualizacao(dados.dataAtualizacao());
         processo.setDescricao(encriptar(dados.descricao(), key.getChavePublica()));
+        processo.setNumeroProcesso(encriptar(dados.numeroProcesso(), key.getChavePublica()));
+        processo.setClasse(encriptar(dados.classe(), key.getChavePublica()));
+        processo.setLocalidade(encriptar(dados.localidade(), key.getChavePublica()));
+        processo.setAssunto(encriptar(dados.assunto(), key.getChavePublica()));
+        processo.getNomeAutor().add(encriptar(dados.nomeAutor(), key.getChavePublica()));
+        processo.getNomeReu().add(encriptar(dados.nomeReu(), key.getChavePublica()));
         processo.setChave(key);
 
         return processo;
@@ -71,10 +77,10 @@ public class ProcessoService {
     public MensagemResponse cadastrarProcessoComClienteNovo(CadastrarProcessoRequest dados){
         Chave key = gerarChaveService.findKey();
 
-        if(valida.emailCliente(dados.cliente().getEmail())){
+        if(valida.emailCliente(dados.cliente().getEmail(), dados.advogado().getId())){
             return new MensagemResponse("Email já cadastrado!", 409);
         }
-        if(valida.CPFCliente(dados.cliente().getCpf())){
+        if(valida.CPFCliente(dados.cliente().getCpf(), dados.advogado().getId())){
             return new MensagemResponse("CPF já cadastrado!", 409);
         }
         Cliente cliente = new Cliente(dados.cliente());
@@ -111,7 +117,7 @@ public class ProcessoService {
         p.setId(processo.getId());
         p.setDataAtualizacao(processo.getDataAtualizacao());
         p.setDescricao(decriptar(processo.getDescricao(), chaveProcesso));
-        p.setStatus(decriptar(processo.getStatus(), chaveProcesso));
+        p.setUltimoEvento(decriptar(processo.getUltimoEvento(), chaveProcesso));
         p.setAdvogado(descriptografarAdvogado(processo.getAdvogado()));
         p.setCliente(descriptografarCliente(processo.getCliente()));
         return p;

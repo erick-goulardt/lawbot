@@ -1,4 +1,4 @@
-package com.ifsul.lawbot.services;
+package com.ifsul.lawbot.util;
 
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Cliente;
@@ -48,8 +48,10 @@ public class ValidaDados {
         return false;
     }
 
-    public boolean CPFCliente(String cpf){
-        var clienteCriptografados = clienteRepository.findAll();
+    public boolean CPFCliente(String cpf, Long idAdvogado){
+        var advogado = advogadoRepository.findById(idAdvogado);
+
+        var clienteCriptografados = advogado.get().getClientes();
 
         for(Cliente cliente : clienteCriptografados){
             var cpfDecriptado = decriptar(cliente.getCpf(), cliente.getChave().getChavePrivada());
@@ -60,10 +62,12 @@ public class ValidaDados {
         return false;
     }
 
-    public boolean emailCliente(String email){
-        var clientesCriptografados = clienteRepository.findAll();
+    public boolean emailCliente(String email, Long idAdvogado){
+        var advogado = advogadoRepository.findById(idAdvogado);
 
-        for(Cliente cliente : clientesCriptografados){
+        var clienteCriptografados = advogado.get().getClientes();
+
+        for(Cliente cliente : clienteCriptografados){
             var emailDecriptado = decriptar(cliente.getEmail(), cliente.getChave().getChavePrivada());
             if(email.equals(emailDecriptado)){
                 return true;

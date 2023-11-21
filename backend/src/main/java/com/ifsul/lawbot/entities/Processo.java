@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,7 +27,7 @@ public class Processo {
     private Cliente cliente;
 
     @Column(columnDefinition = "LONGTEXT")
-    private String status;
+    private String ultimoEvento;
 
     private LocalDate dataAtualizacao;
 
@@ -45,18 +46,15 @@ public class Processo {
     @Column(columnDefinition = "LONGTEXT")
     private String assunto;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String ultimoEvento;
-
     @ManyToOne
     @JoinColumn(name = "chave_id")
     private Chave chave;
 
     @Column(columnDefinition = "LONGTEXT")
-    private List<String> nomeReu;
+    private List<String> nomeReu = new ArrayList<>();
 
     @Column(columnDefinition = "LONGTEXT")
-    private List<String> nomeAutor;
+    private List<String> nomeAutor = new ArrayList<>();
 
     private boolean clienteDefinido;
 }

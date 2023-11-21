@@ -4,7 +4,6 @@ import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
-import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
 import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Advogado;
@@ -14,11 +13,11 @@ import com.ifsul.lawbot.entities.Processo;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import com.ifsul.lawbot.repositories.ClienteRepository;
 import com.ifsul.lawbot.repositories.ProcessoRepository;
+import com.ifsul.lawbot.util.ValidaDados;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.PrivateKey;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,11 +48,11 @@ public class ClienteService {
     public MensagemResponse cadastrarCliente(CadastrarClienteRequest dados) {
         Cliente cliente = new Cliente();
 
-        if(valida.CPFCliente(dados.cpf())){
+        if(valida.CPFCliente(dados.cpf(), dados.idAdvogado())){
             return new MensagemResponse("CPF já cadastrado!", 409);
         }
 
-        if(valida.emailCliente(dados.email())){
+        if(valida.emailCliente(dados.email(), dados.idAdvogado())){
             return new MensagemResponse("Email já cadastrado!", 409);
         }
 
@@ -92,13 +91,14 @@ public class ClienteService {
 
     public MensagemResponse editarCliente(Long clienteId, EditarClienteRequest dados){
         var cliente = repository.getReferenceById(clienteId);
+        var advogado = cliente.getAdvogados().stream().toList().get(0);
 
         if ( dados.senha() != null) {
             cliente.setSenha(HashSenhasService.hash(dados.senha()));
         }
         if( dados.email() != null){
             System.out.println("oi");
-            if(valida.emailCliente(dados.email())){
+            if(valida.emailCliente(dados.email(), advogado.getId())){
                 System.out.println("ENTROU!!");
                 return new MensagemResponse("Email já cadastrado!", 409);
             }
@@ -146,7 +146,7 @@ public class ClienteService {
         Processo p = new Processo();
 
         p.setDescricao(decriptar(processo.getDescricao(), chaveProcesso));
-        p.setStatus(decriptar(processo.getStatus(), chaveProcesso));
+        p.setUltimoEvento(decriptar(processo.getUltimoEvento(), chaveProcesso));
         p.setAdvogado(descriptografarAdvogado(processo.getAdvogado()));
         p.setCliente(descriptografarCliente(processo.getCliente()));
 

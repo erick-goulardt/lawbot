@@ -4,21 +4,19 @@ import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.ListarAdvogadoRequest;
-import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
 import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Cliente;
-import com.ifsul.lawbot.entities.Processo;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import com.ifsul.lawbot.repositories.ClienteRepository;
 import com.ifsul.lawbot.repositories.ProcessoRepository;
+import com.ifsul.lawbot.util.ValidaDados;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.PrivateKey;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

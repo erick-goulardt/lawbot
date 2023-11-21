@@ -8,8 +8,14 @@ import java.time.LocalDate;
 public record CadastrarProcessoRequest(
         Advogado advogado,
         Cliente cliente,
-        String status,
+        String ultimoEvento,
         LocalDate dataAtualizacao,
-        String descricao
+        String descricao,
+        String numeroProcesso,
+        String classe,
+        String localidade,
+        String assunto,
+        String nomeReu,
+        String nomeAutor
 ) {
 }

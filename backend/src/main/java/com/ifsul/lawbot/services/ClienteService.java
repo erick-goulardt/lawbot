@@ -91,18 +91,15 @@ public class ClienteService {
 
     public MensagemResponse editarCliente(Long clienteId, EditarClienteRequest dados){
         var cliente = repository.getReferenceById(clienteId);
-        var advogado = cliente.getAdvogados().stream().toList().get(0);
+        var advogado = cliente.getAdvogados().stream().toList();
 
         if ( dados.senha() != null) {
             cliente.setSenha(HashSenhasService.hash(dados.senha()));
         }
         if( dados.email() != null){
-            System.out.println("oi");
-            if(valida.emailCliente(dados.email(), advogado.getId())){
-                System.out.println("ENTROU!!");
+            if(valida.emailClienteLista(dados.email(), advogado)){
                 return new MensagemResponse("Email já cadastrado!", 409);
             }
-            System.out.println("SAIU");
             cliente.setEmail(encriptar(dados.email(), cliente.getChave().getChavePublica()));
         }
         if( dados.nome() != null){

@@ -8,6 +8,9 @@ import com.ifsul.lawbot.repositories.ProcessoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.ifsul.lawbot.services.CriptografiaService.decriptar;
 
 @Service
@@ -71,6 +74,20 @@ public class ValidaDados {
             var emailDecriptado = decriptar(cliente.getEmail(), cliente.getChave().getChavePrivada());
             if(email.equals(emailDecriptado)){
                 return true;
+            }
+        }
+        return false;
+    }
+    public boolean emailClienteLista(String email, List<Advogado> advogados){
+
+        for(Advogado adv : advogados){
+            var clienteCriptografados = adv.getClientes();
+
+            for(Cliente cliente : clienteCriptografados){
+                var emailDecriptado = decriptar(cliente.getEmail(), cliente.getChave().getChavePrivada());
+                if(email.equals(emailDecriptado)){
+                    return true;
+                }
             }
         }
         return false;

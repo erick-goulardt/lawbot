@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -49,5 +50,11 @@ public class ProcessoController {
     public List<ListarProcessosRequest> listarProcessosPeloCliente(@PathVariable Long id){
         var response = service.listarPeloCliente(id);
         return response;
+    }
+
+    @PostMapping("/cadastro-arquivo")
+    public ResponseEntity<MessageDTO> cadastrarProcessosEmBloco(@RequestParam("file") MultipartFile file){
+        var response = service.cadastrarProcessoEmBloco(file);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response));
     }
 }

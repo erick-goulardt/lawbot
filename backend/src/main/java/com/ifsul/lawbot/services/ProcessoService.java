@@ -11,10 +11,12 @@ import com.ifsul.lawbot.entities.Processo;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import com.ifsul.lawbot.repositories.ClienteRepository;
 import com.ifsul.lawbot.repositories.ProcessoRepository;
+import com.ifsul.lawbot.util.ProcessoExcel;
 import com.ifsul.lawbot.util.ValidaDados;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.PrivateKey;
 import java.util.List;
@@ -28,6 +30,9 @@ public class ProcessoService {
 
     @Autowired
     private ValidaDados valida;
+
+    @Autowired
+    private ProcessoExcel excel;
 
     @Autowired
     private ProcessoRepository processoRepository;
@@ -185,5 +190,11 @@ public class ProcessoService {
         cliente.setChave(c.getChave());
 
         return cliente;
+    }
+
+    public MensagemResponse cadastrarProcessoEmBloco(MultipartFile file){
+        System.out.println("Service... ");
+        excel.leArquivo(file);
+        return new MensagemResponse("Processos salvos com sucesso!", 200);
     }
 }

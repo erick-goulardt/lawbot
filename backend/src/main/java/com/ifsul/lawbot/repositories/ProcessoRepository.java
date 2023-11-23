@@ -12,6 +12,8 @@ public interface ProcessoRepository extends JpaRepository<Processo, Long> {
 
     List<Processo> findAllByCliente_Id(Long id);
 
+    Processo findByNumeroProcesso(String numeroProcesso);
+
 //    @Query("SELECT c FROM Cliente c " +
 //            "JOIN Processo p ON c.id = p.cliente_id " +
 //            "WHERE p.advogado_id = {id}")

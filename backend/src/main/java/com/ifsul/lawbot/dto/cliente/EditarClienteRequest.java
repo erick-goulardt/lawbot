@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public record EditarClienteRequest(
         String nome,
         String email,
-        String senha
+        String cpf
 
 ) {
 }

@@ -93,11 +93,14 @@ public class ClienteService {
         var cliente = repository.getReferenceById(clienteId);
         var advogado = cliente.getAdvogados().stream().toList();
 
-        if ( dados.senha() != null) {
-            cliente.setSenha(HashSenhasService.hash(dados.senha()));
+        if ( dados.cpf() != null) {
+            if(valida.cpfClienteLista(clienteId, dados.cpf(), advogado)){
+                return new MensagemResponse("CPF já cadastrado!", 409);
+            }
+            cliente.setCpf(encriptar(dados.cpf(), cliente.getChave().getChavePublica()));
         }
         if( dados.email() != null){
-            if(valida.emailClienteLista(dados.email(), advogado)){
+            if(valida.emailClienteLista(clienteId, dados.email(), advogado)){
                 return new MensagemResponse("Email já cadastrado!", 409);
             }
             cliente.setEmail(encriptar(dados.email(), cliente.getChave().getChavePublica()));

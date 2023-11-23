@@ -78,7 +78,7 @@ public class ValidaDados {
         }
         return false;
     }
-    public boolean emailClienteLista(String email, List<Advogado> advogados){
+    public boolean emailClienteLista(Long id, String email, List<Advogado> advogados){
 
         for(Advogado adv : advogados){
             var clienteCriptografados = adv.getClientes();
@@ -86,7 +86,9 @@ public class ValidaDados {
             for(Cliente cliente : clienteCriptografados){
                 var emailDecriptado = decriptar(cliente.getEmail(), cliente.getChave().getChavePrivada());
                 if(email.equals(emailDecriptado)){
-                    return true;
+                    if(cliente.getId() != id){
+                        return true;
+                    }
                 }
             }
         }
@@ -99,6 +101,23 @@ public class ValidaDados {
             var emailDecriptado = decriptar(advogado.getEmail(), advogado.getChave().getChavePrivada());
             if(email.equals(emailDecriptado)){
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean cpfClienteLista(Long id, String cpf, List<Advogado> advogados){
+
+        for(Advogado adv : advogados){
+            var clienteCriptografados = adv.getClientes();
+
+            for(Cliente cliente : clienteCriptografados){
+                var cpfDecriptado = decriptar(cliente.getCpf(), cliente.getChave().getChavePrivada());
+                if(cpf.equals(cpfDecriptado)){
+                    if(cliente.getId() != id){
+                        return true;
+                    }
+                }
             }
         }
         return false;

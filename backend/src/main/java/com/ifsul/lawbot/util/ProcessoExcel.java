@@ -25,18 +25,16 @@ public class ProcessoExcel {
     private AdvogadoRepository advogadoRepository;
 
     public void leArquivo(MultipartFile file){
-        System.out.println("Le arquivo...");
         try{
             Workbook workbook = new HSSFWorkbook(file.getInputStream());
             Sheet sheet = workbook.getSheetAt(0);
-            System.out.println("Try ");
             for(Row row : sheet){
-                System.out.println("Row " + row.getRowNum());
                 List<Processo> processos = new ArrayList<>();
                 Processo processo = new Processo();
+                List<String> nomes = new ArrayList<>();
                 if (row.getRowNum() > 1){
                     for (Cell cell : row){
-                        if (cell.toString() != "" && cell.toString() != " "){
+                        if (!cell.toString().equals("") && !cell.toString().equals(" ")){
                             switch (cell.getColumnIndex()) {
                                 case 0:
                                     // Numero do processo
@@ -52,11 +50,19 @@ public class ProcessoExcel {
                                     break;
                                 case 2:
                                     // Autores
-                                    RichTextString autor = cell.getRichStringCellValue();
-                                    String[] autores = autor.getString().split("\n");
-                                    for(int i = 0; i < autores.length; i++){
-                                        processo.getNomeAutor().add(autores[i]);
+                                    System.out.println(cell.getCellType());
+                                    String autor = cell.getStringCellValue().toString();
+                                    if(autor.equals("") || autor.equals(" ")){
+                                        processo.getNomeAutor().add(" ");
                                     }
+                                    else{
+                                            String[] autores = autor.split("\n");
+                                            for(int i = 0; i < autores.length; i++){
+                                            processo.getNomeAutor().add(autores[i]);
+                                    }
+
+                                    }
+
                                     break;
                                 case 3:
                                     // Reus
@@ -86,12 +92,14 @@ public class ProcessoExcel {
                                     // Código para o caso padrão (se não corresponder a nenhum dos casos anteriores)
                                     break;
                             }
+                            processos.add(processo);
 
                         }
                     }
                 }
                 if (processo.getNumeroProcesso() != null){
                     for (int i = 0; i < processos.size(); i++){
+                        System.out.println("Salvou..");
                         processoRepository.save(processos.get(i));
                     }
                 }

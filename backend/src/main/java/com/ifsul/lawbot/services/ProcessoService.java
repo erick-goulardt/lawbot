@@ -193,7 +193,6 @@ public class ProcessoService {
     }
 
     public MensagemResponse cadastrarProcessoEmBloco(MultipartFile file){
-        System.out.println("Service... ");
         excel.leArquivo(file);
         return new MensagemResponse("Processos salvos com sucesso!", 200);
     }

@@ -73,8 +73,15 @@ public class ProcessoController {
 
     @PutMapping("/editar/{id}")
     @Transactional
-    public ResponseEntity<?> atualizaProcesso(@PathVariable Long id, @RequestBody @Valid EditarProcessoRequest dados){
+    public ResponseEntity<MessageDTO> atualizaProcesso(@PathVariable Long id, @RequestBody @Valid EditarProcessoRequest dados){
         var response = service.atualizarProcesso(id, dados);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response));
+    }
+
+    @DeleteMapping("/deletar/{id}")
+    @Transactional
+    public ResponseEntity<MessageDTO> deletaProcesso(@PathVariable Long id){
+        var response = service.deletarProcesso(id);
         return ResponseEntity.status(response.status()).body(new MessageDTO(response));
     }
 }

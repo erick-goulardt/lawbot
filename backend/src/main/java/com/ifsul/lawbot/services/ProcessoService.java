@@ -268,4 +268,10 @@ public class ProcessoService {
         processoRepository.save(processo);
         return new MensagemResponse("Processo atualizado!", 200);
     }
+
+    public MensagemResponse deletarProcesso(Long id) {
+        var processo = processoRepository.getReferenceById(id);
+        processoRepository.delete(processo);
+        return new MensagemResponse("Processo deletado!", 200);
+    }
 }

@@ -1,8 +1,11 @@
 package com.ifsul.lawbot.controller;
 
 import com.ifsul.lawbot.dto.processo.CadastrarProcessoRequest;
+import com.ifsul.lawbot.dto.processo.ListarAutoresRequest;
 import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
+import com.ifsul.lawbot.dto.processo.ListarReusRequest;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
+import com.ifsul.lawbot.entities.Reu;
 import com.ifsul.lawbot.services.ProcessoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +59,17 @@ public class ProcessoController {
     public ResponseEntity<MessageDTO> cadastrarProcessosEmBloco(@RequestParam("file") MultipartFile file){
         var response = service.cadastrarProcessoEmBloco(file);
         return ResponseEntity.status(response.status()).body(new MessageDTO(response));
+    }
+
+    @GetMapping("/reu/{id}")
+    public List<ListarReusRequest> listaReu(@PathVariable Long id){
+        var response = service.listaReu((Long) id);
+        return response;
+    }
+
+    @GetMapping("/autor/{id}")
+    public List<ListarAutoresRequest> listaAutor(@PathVariable Long id){
+        var response = service.listaAutor( id);
+        return response;
     }
 }

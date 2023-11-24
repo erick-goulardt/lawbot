@@ -1,13 +1,12 @@
 package com.ifsul.lawbot.services;
 
 import com.ifsul.lawbot.dto.processo.CadastrarProcessoRequest;
+import com.ifsul.lawbot.dto.processo.ListarAutoresRequest;
 import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
+import com.ifsul.lawbot.dto.processo.ListarReusRequest;
 import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
-import com.ifsul.lawbot.entities.Advogado;
-import com.ifsul.lawbot.entities.Chave;
-import com.ifsul.lawbot.entities.Cliente;
-import com.ifsul.lawbot.entities.Processo;
+import com.ifsul.lawbot.entities.*;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import com.ifsul.lawbot.repositories.ClienteRepository;
 import com.ifsul.lawbot.repositories.ProcessoRepository;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -125,32 +125,42 @@ public class ProcessoService {
         p.setUltimoEvento(decriptar(processo.getUltimoEvento(), chaveProcesso));
         p.setAdvogado(descriptografarAdvogado(processo.getAdvogado()));
         p.setCliente(descriptografarCliente(processo.getCliente()));
+        p.setNomeAutor(decriptaAutor(processo));
+        p.setNomeReu(decriptaReu(processo));
         return p;
     }
 
     private Advogado descriptografarAdvogado(Advogado advogado) {
-        Advogado novoAdvogado = new Advogado();
+        try{
+            Advogado novoAdvogado = new Advogado();
 
-        novoAdvogado.setChave(advogado.getChave());
-        PrivateKey chavePrivada = novoAdvogado.getChave().getChavePrivada();
+            novoAdvogado.setChave(advogado.getChave());
+            PrivateKey chavePrivada = novoAdvogado.getChave().getChavePrivada();
 
-        novoAdvogado.setNome(decriptar(advogado.getNome(), chavePrivada));
-        novoAdvogado.setCpf(decriptar(advogado.getCpf(), chavePrivada));
-        novoAdvogado.setOab(decriptar(advogado.getOab(), chavePrivada));
-        novoAdvogado.setEmail(decriptar(advogado.getEmail(), chavePrivada));
-        return novoAdvogado;
+            novoAdvogado.setNome(decriptar(advogado.getNome(), chavePrivada));
+            novoAdvogado.setCpf(decriptar(advogado.getCpf(), chavePrivada));
+            novoAdvogado.setOab(decriptar(advogado.getOab(), chavePrivada));
+            novoAdvogado.setEmail(decriptar(advogado.getEmail(), chavePrivada));
+            return novoAdvogado;
+        } catch (Exception ex){
+            return null;
+        }
     }
 
     private Cliente descriptografarCliente(Cliente cliente) {
-        Cliente novoCliente = new Cliente();
+        try{
+            Cliente novoCliente = new Cliente();
 
-        novoCliente.setChave(cliente.getChave());
-        PrivateKey chavePrivada = novoCliente.getChave().getChavePrivada();
+            novoCliente.setChave(cliente.getChave());
+            PrivateKey chavePrivada = novoCliente.getChave().getChavePrivada();
 
-        novoCliente.setNome(decriptar(cliente.getNome(), chavePrivada));
-        novoCliente.setCpf(decriptar(cliente.getCpf(), chavePrivada));
-        novoCliente.setEmail(decriptar(cliente.getEmail(), chavePrivada));
-        return novoCliente;
+            novoCliente.setNome(decriptar(cliente.getNome(), chavePrivada));
+            novoCliente.setCpf(decriptar(cliente.getCpf(), chavePrivada));
+            novoCliente.setEmail(decriptar(cliente.getEmail(), chavePrivada));
+            return novoCliente;
+        } catch(Exception ex){
+            return null;
+        }
     }
 
     public List<ListarProcessosRequest> listarPeloAdvogado(Long id){
@@ -196,4 +206,51 @@ public class ProcessoService {
         excel.leArquivo(file);
         return new MensagemResponse("Processos salvos com sucesso!", 200);
     }
+
+    public List<ListarReusRequest> listaReu(Long id) {
+        var processo = processoRepository.findById(id);
+        var lista = processo.get().getNomeReu().stream().toList();
+        List<ListarReusRequest> reus = new ArrayList<>();
+        for(Reu reu : lista){
+            reus.add(new ListarReusRequest(decriptar(reu.getNome(), processo.get().getChave().getChavePrivada())));
+        }
+        return reus;
+    }
+
+    public List<ListarAutoresRequest> listaAutor(Long id) {
+        var processo = processoRepository.findById(id);
+        var lista = processo.get().getNomeAutor().stream().toList();
+        List<ListarAutoresRequest> autores = new ArrayList<>();
+        for(Autor autor : lista){
+            autores.add(new ListarAutoresRequest(decriptar(autor.getNome(), processo.get().getChave().getChavePrivada())));
+        }
+        return autores;
+    }
+
+    public List<Autor> decriptaAutor(Processo processo){
+        List<Autor> autores = processo.getNomeAutor();
+        List<Autor> a = new ArrayList<>();
+        for(Autor au : autores){
+            Autor aa = new Autor();
+            aa.setNome(decriptar(au.getNome(), processo.getChave().getChavePrivada()));
+            a.add(aa);
+        }
+        return a;
+    }
+
+    public List<Reu> decriptaReu(Processo processo){
+        List<Reu> reus = processo.getNomeReu();
+        List<Reu> a = new ArrayList<>();
+        for(Reu au : reus){
+            Reu aa = new Reu();
+            aa.setId(au.getId());
+            aa.setProcesso(au.getProcesso());
+            aa.setNome(decriptar(au.getNome(), processo.getChave().getChavePrivada()));
+            a.add(aa);
+        }
+        return a;
+    }
+//    public List<ListarProcessosRequest> listarProcessoPeloCliente(Long id){
+//
+//    }
 }

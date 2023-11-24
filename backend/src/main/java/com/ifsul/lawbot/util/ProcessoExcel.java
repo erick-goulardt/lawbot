@@ -1,12 +1,14 @@
 package com.ifsul.lawbot.util;
 
 import com.ifsul.lawbot.entities.Autor;
+import com.ifsul.lawbot.entities.Chave;
 import com.ifsul.lawbot.entities.Processo;
 import com.ifsul.lawbot.entities.Reu;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import com.ifsul.lawbot.repositories.AutorRepository;
 import com.ifsul.lawbot.repositories.ProcessoRepository;
 import com.ifsul.lawbot.repositories.ReuRepository;
+import com.ifsul.lawbot.services.GerarChaveService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
 
 @Service
 public class ProcessoExcel {
@@ -31,11 +36,16 @@ public class ProcessoExcel {
     @Autowired
     private AdvogadoRepository advogadoRepository;
 
+    @Autowired
+    private GerarChaveService gerarChaveService;
+
     public void leArquivo(MultipartFile file){
+
         try{
             Workbook workbook = new HSSFWorkbook(file.getInputStream());
             Sheet sheet = workbook.getSheetAt(0);
             for(Row row : sheet){
+                Chave key = gerarChaveService.findKey();
                 Processo processo = new Processo();
                 List<Processo> processos = new ArrayList<>();
                 if (row.getRowNum() > 1){
@@ -46,8 +56,9 @@ public class ProcessoExcel {
                                     // Numero do processo
                                     if (confereProcesso(cell.toString())){
                                         String text = cell.toString();
-                                        String resultado = text.replaceAll("[a-zA-Z.\\s]", "");
-                                        processo.setNumeroProcesso(resultado);
+                                        String cleanString = text.replaceAll("[.,()-]", "");
+                                        String resultado = cleanString.substring(0, Math.min(cleanString.length(), 20));
+                                        processo.setNumeroProcesso(encriptar(resultado, key.getChavePublica()));
                                     }
                                     else {
                                         processo.setNumeroProcesso(null);
@@ -55,7 +66,7 @@ public class ProcessoExcel {
                                     break;
                                 case 1:
                                     // Classe
-                                    processo.setClasse(cell.toString());
+                                    processo.setClasse(encriptar(cell.toString(), key.getChavePublica()));
                                     break;
                                 case 2:
                                     // Autores
@@ -69,7 +80,7 @@ public class ProcessoExcel {
                                     for(int i = 0; i < tamanho; i++){
                                         nomesAutores[i] = new Autor();
                                         try{
-                                            nomesAutores[i].setNome(autores[i]);
+                                            nomesAutores[i].setNome(encriptar(autores[i], key.getChavePublica()));
                                         }catch(Exception ex){
                                             nomesAutores[i].setNome(null);
                                         }
@@ -91,7 +102,7 @@ public class ProcessoExcel {
                                     for(int i = 0; i < tam; i++){
                                         nomesReus[i] = new Reu();
                                         try{
-                                           nomesReus[i].setNome(reus[i]);
+                                           nomesReus[i].setNome(encriptar(reus[i], key.getChavePublica()));
                                        }catch(Exception ex){
                                            nomesReus[i].setNome(null);
                                        }
@@ -103,15 +114,15 @@ public class ProcessoExcel {
                                     break;
                                 case 4:
                                     // Localidade
-                                    processo.setLocalidade(cell.toString());
+                                    processo.setLocalidade(encriptar(cell.toString(), key.getChavePublica()));
                                     break;
                                 case 5:
                                     // Assunto
-                                    processo.setAssunto(cell.toString());
+                                    processo.setAssunto(encriptar(cell.toString(), key.getChavePublica()));
                                     break;
                                 case 6:
                                     // Ultimo evento
-                                    processo.setUltimoEvento(cell.toString());
+                                    processo.setUltimoEvento(encriptar(cell.toString(), key.getChavePublica()));
                                     break;
                                 case 7:
                                     // Data
@@ -128,6 +139,8 @@ public class ProcessoExcel {
                 }
                 if (processo.getNumeroProcesso() != null){
                     for (int i = 0; i < processos.size(); i++){
+                        processos.get(i).setChave(key);
+                        processos.get(i).setClienteDefinido(false);
                         processoRepository.save(processos.get(i));
                         for(int j = 0; j < processos.get(i).getNomeAutor().size(); j++){
                             autorRepository.save(processos.get(j).getNomeAutor().get(j));

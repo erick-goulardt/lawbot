@@ -1,9 +1,7 @@
 package com.ifsul.lawbot.controller;
 
-import com.ifsul.lawbot.dto.processo.CadastrarProcessoRequest;
-import com.ifsul.lawbot.dto.processo.ListarAutoresRequest;
-import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
-import com.ifsul.lawbot.dto.processo.ListarReusRequest;
+import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
+import com.ifsul.lawbot.dto.processo.*;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Reu;
 import com.ifsul.lawbot.services.ProcessoService;
@@ -55,9 +53,9 @@ public class ProcessoController {
         return response;
     }
 
-    @PostMapping("/cadastro-arquivo")
-    public ResponseEntity<MessageDTO> cadastrarProcessosEmBloco(@RequestParam("file") MultipartFile file){
-        var response = service.cadastrarProcessoEmBloco(file);
+    @PostMapping("/cadastro-arquivo/{id}")
+    public ResponseEntity<MessageDTO> cadastrarProcessosEmBloco(@RequestParam("file") MultipartFile file, @PathVariable Long id){
+        var response = service.cadastrarProcessoEmBloco(file, id);
         return ResponseEntity.status(response.status()).body(new MessageDTO(response));
     }
 
@@ -71,5 +69,12 @@ public class ProcessoController {
     public List<ListarAutoresRequest> listaAutor(@PathVariable Long id){
         var response = service.listaAutor( id);
         return response;
+    }
+
+    @PutMapping("/editar/{id}")
+    @Transactional
+    public ResponseEntity<?> atualizaProcesso(@PathVariable Long id, @RequestBody @Valid EditarProcessoRequest dados){
+        var response = service.atualizarProcesso(id, dados);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response));
     }
 }

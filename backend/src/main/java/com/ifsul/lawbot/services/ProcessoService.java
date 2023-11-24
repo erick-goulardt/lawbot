@@ -1,9 +1,6 @@
 package com.ifsul.lawbot.services;
 
-import com.ifsul.lawbot.dto.processo.CadastrarProcessoRequest;
-import com.ifsul.lawbot.dto.processo.ListarAutoresRequest;
-import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
-import com.ifsul.lawbot.dto.processo.ListarReusRequest;
+import com.ifsul.lawbot.dto.processo.*;
 import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.*;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.PrivateKey;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -202,8 +200,8 @@ public class ProcessoService {
         return cliente;
     }
 
-    public MensagemResponse cadastrarProcessoEmBloco(MultipartFile file){
-        excel.leArquivo(file);
+    public MensagemResponse cadastrarProcessoEmBloco(MultipartFile file, Long id){
+        excel.leArquivo(file, id);
         return new MensagemResponse("Processos salvos com sucesso!", 200);
     }
 
@@ -250,7 +248,24 @@ public class ProcessoService {
         }
         return a;
     }
-//    public List<ListarProcessosRequest> listarProcessoPeloCliente(Long id){
-//
-//    }
+
+    public MensagemResponse atualizarProcesso(Long id, EditarProcessoRequest dados){
+        var processo = processoRepository.getReferenceById(id);
+
+        var cliente = clienteRepository.getReferenceById(dados.cliente().getId());
+
+        if ( dados.cliente().getId() != null) {
+            processo.setCliente(cliente);
+        }
+        if( dados.descricao() != null){
+            processo.setDescricao(encriptar(dados.descricao(), processo.getChave().getChavePublica()));
+        }
+        if( dados.ultimoEvento() != null){
+            processo.setUltimoEvento(encriptar(dados.ultimoEvento(), processo.getChave().getChavePublica()));
+            processo.setDataAtualizacao(LocalDate.now());
+        }
+
+        processoRepository.save(processo);
+        return new MensagemResponse("Processo atualizado!", 200);
+    }
 }

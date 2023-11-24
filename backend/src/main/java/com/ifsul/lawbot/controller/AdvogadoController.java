@@ -58,7 +58,6 @@ public class AdvogadoController {
 
     @GetMapping("/listarClientes/{id}")
     public ResponseEntity listarClientes(@PathVariable Long id){
-        System.out.println("OIEEEEE");
         var response = service.listarClientesDoAdvogado(id);
         return ResponseEntity.status(200).body(response);
     }

@@ -39,7 +39,8 @@ public class ProcessoExcel {
     @Autowired
     private GerarChaveService gerarChaveService;
 
-    public void leArquivo(MultipartFile file){
+    public void leArquivo(MultipartFile file, Long id){
+        var advogado = advogadoRepository.getReferenceById(id);
 
         try{
             Workbook workbook = new HSSFWorkbook(file.getInputStream());
@@ -141,6 +142,8 @@ public class ProcessoExcel {
                     for (int i = 0; i < processos.size(); i++){
                         processos.get(i).setChave(key);
                         processos.get(i).setClienteDefinido(false);
+                        processos.get(i).setAdvogado(advogado);
+                        advogado.getProcessos().add(processos.get(i));
                         processoRepository.save(processos.get(i));
                         for(int j = 0; j < processos.get(i).getNomeAutor().size(); j++){
                             autorRepository.save(processos.get(j).getNomeAutor().get(j));

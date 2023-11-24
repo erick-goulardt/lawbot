@@ -127,8 +127,8 @@ public class AdvogadoService {
     }
 
     public List<ListarClienteRequest> listarClientesDoAdvogado(Long id){
-        var advogado = repository.findById(id);
-        var clientes = advogado.get().getClientes()
+        var advogado = repository.getReferenceById(id);
+        var clientes = advogado.getClientes()
                 .stream().map(this::descriptografarCliente)
                 .map(ListarClienteRequest::new)
                 .collect(Collectors.toList());

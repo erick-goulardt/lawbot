@@ -10,7 +10,6 @@ public record EditarAdvogadoRequest(
         String nome,
         @Email
         String email,
-        @CPF
         String senha
 ) {
 }

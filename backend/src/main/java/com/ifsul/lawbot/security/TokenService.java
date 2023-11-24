@@ -3,6 +3,7 @@ package com.ifsul.lawbot.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.ifsul.lawbot.dto.utils.TokenRequest;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Cliente;
@@ -25,9 +26,8 @@ public class TokenService {
             var username = decriptar(usuario.getUsername(), usuario.getChave().getChavePrivada());
             var algoritmo = Algorithm.HMAC256(secret);
             var token = JWT.create()
-                    .withIssuer("Lawbot - Cliente")
+                    .withIssuer("Lawbot")
                     .withSubject(username)
-                    .withClaim("id", usuario.getId())
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
             var id = usuario.getId();
@@ -42,15 +42,27 @@ public class TokenService {
             var username = decriptar(usuario.getUsername(), usuario.getChave().getChavePrivada());
             var algoritmo = Algorithm.HMAC256(secret);
             var token = JWT.create()
-                    .withIssuer("Lawbot - Advogado")
+                    .withIssuer("Lawbot")
                     .withSubject(username)
-                    .withClaim("id", usuario.getId())
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
             var id = usuario.getId();
             return new TokenRequest(token, id);
         } catch (JWTCreationException exception){
             throw new RuntimeException("erro ao gerar token jwt", exception);
+        }
+    }
+    public String getSubject(String token){
+        try{
+            var algoritmo = Algorithm.HMAC256(secret);
+            return JWT.require(algoritmo)
+                    .withIssuer("Lawbot")
+                    .build()
+                    .verify(token)
+                    .getSubject();
+
+        }catch (JWTVerificationException exception){
+            throw new RuntimeException("Token JWT inválido ou expirado");
         }
     }
 

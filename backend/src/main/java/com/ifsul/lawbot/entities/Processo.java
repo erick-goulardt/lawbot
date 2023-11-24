@@ -50,11 +50,11 @@ public class Processo {
     @JoinColumn(name = "chave_id")
     private Chave chave;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private List<String> nomeReu = new ArrayList<>();
+    @OneToMany(mappedBy = "processo")
+    private List<Reu> nomeReu = new ArrayList<>();
 
-    @Column(columnDefinition = "LONGTEXT")
-    private List<String> nomeAutor = new ArrayList<>();
+    @OneToMany(mappedBy = "processo")
+    private List<Autor> nomeAutor = new ArrayList<>();
 
     private boolean clienteDefinido;
 }

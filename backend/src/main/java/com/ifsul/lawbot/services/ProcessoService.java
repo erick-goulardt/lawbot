@@ -58,8 +58,8 @@ public class ProcessoService {
         processo.setClasse(encriptar(dados.classe(), key.getChavePublica()));
         processo.setLocalidade(encriptar(dados.localidade(), key.getChavePublica()));
         processo.setAssunto(encriptar(dados.assunto(), key.getChavePublica()));
-        processo.getNomeAutor().add(encriptar(dados.nomeAutor(), key.getChavePublica()));
-        processo.getNomeReu().add(encriptar(dados.nomeReu(), key.getChavePublica()));
+        processo.getNomeAutor().add(dados.nomeAutor());
+        processo.getNomeReu().add(dados.nomeReu());
         processo.setChave(key);
 
         return processo;

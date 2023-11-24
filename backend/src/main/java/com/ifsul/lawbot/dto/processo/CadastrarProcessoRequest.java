@@ -1,8 +1,8 @@
 package com.ifsul.lawbot.dto.processo;
 
-import com.ifsul.lawbot.entities.Advogado;
-import com.ifsul.lawbot.entities.Cliente;
+import com.ifsul.lawbot.entities.*;
 
+import javax.print.attribute.standard.ReferenceUriSchemesSupported;
 import java.time.LocalDate;
 
 public record CadastrarProcessoRequest(
@@ -15,7 +15,7 @@ public record CadastrarProcessoRequest(
         String classe,
         String localidade,
         String assunto,
-        String nomeReu,
-        String nomeAutor
+        Reu nomeReu,
+        Autor nomeAutor
 ) {
 }

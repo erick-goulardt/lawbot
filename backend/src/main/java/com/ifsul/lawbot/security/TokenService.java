@@ -21,21 +21,6 @@ public class TokenService {
 
     @Value("${api.security.token.secret}")
     private String secret;
-    public TokenRequest gerarToken(Cliente usuario){
-        try {
-            var username = decriptar(usuario.getUsername(), usuario.getChave().getChavePrivada());
-            var algoritmo = Algorithm.HMAC256(secret);
-            var token = JWT.create()
-                    .withIssuer("Lawbot")
-                    .withSubject(username)
-                    .withExpiresAt(dataExpiracao())
-                    .sign(algoritmo);
-            var id = usuario.getId();
-            return new TokenRequest(token, id);
-        } catch (JWTCreationException exception){
-            throw new RuntimeException("erro ao gerar token jwt", exception);
-        }
-    }
 
     public TokenRequest gerarToken(Advogado usuario){
         try {

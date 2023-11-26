@@ -32,11 +32,7 @@ public class AutenticacaoController {
         try{
             tokenJWT = tokenService.gerarToken((Advogado) authentication.getPrincipal());
         } catch (Exception ex){
-            try{
-                tokenJWT = tokenService.gerarToken((Cliente) authentication.getPrincipal());
-            } catch (Exception exception){
-                exception.printStackTrace();
-            }
+            ex.printStackTrace();
         }
         return ResponseEntity.ok(new TokenRequest(tokenJWT));
     }

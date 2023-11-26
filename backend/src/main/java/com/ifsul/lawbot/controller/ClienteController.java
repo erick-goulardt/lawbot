@@ -1,12 +1,8 @@
 package com.ifsul.lawbot.controller;
 
-import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
-import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
-import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
-import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
-import com.ifsul.lawbot.dto.processo.ListarProcessosRequest;
+import com.ifsul.lawbot.dto.auth.AutenticarRequest;
+import com.ifsul.lawbot.dto.cliente.*;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
-import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.services.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +48,10 @@ public class ClienteController {
     @GetMapping("/{id}")
     public DetalharClienteRequest detalharCliente(@PathVariable Long id){
         return service.detalharCliente(id);
+    }
+
+    @PostMapping("/login")
+    public AutenticacaoClienteResponse loginCliente(@RequestBody @Valid AutenticarRequest dados){
+        return new AutenticacaoClienteResponse(service.logarCliente(dados));
     }
 }

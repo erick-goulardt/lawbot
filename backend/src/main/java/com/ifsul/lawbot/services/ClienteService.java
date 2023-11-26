@@ -1,5 +1,6 @@
 package com.ifsul.lawbot.services;
 
+import com.ifsul.lawbot.dto.auth.AutenticarRequest;
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
 import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
 import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
@@ -164,5 +165,21 @@ public class ClienteService {
         novoAdvogado.setOab(decriptar(advogado.getOab(), chavePrivada));
         novoAdvogado.setEmail(decriptar(advogado.getEmail(), chavePrivada));
         return novoAdvogado;
+    }
+
+    public Cliente logarCliente(AutenticarRequest dados){
+        Cliente cliente = new Cliente();
+        var lista = repository.findAll();
+        for(Cliente c : lista){
+            var email = decriptar(c.getEmail(), c.getChave().getChavePrivada());
+            if (dados.login().equals(email)){
+                cliente = c;
+            }
+        }
+        var autenticou = HashSenhasService.verificaCliente(dados.senha(), cliente.getSenha());
+        if(autenticou){
+            return cliente;
+        }
+        return null;
     }
 }

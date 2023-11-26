@@ -50,10 +50,10 @@ public class Processo {
     @JoinColumn(name = "chave_id")
     private Chave chave;
 
-    @OneToMany(mappedBy = "processo")
+    @OneToMany(mappedBy = "processo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reu> nomeReu = new ArrayList<>();
 
-    @OneToMany(mappedBy = "processo")
+    @OneToMany(mappedBy = "processo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Autor> nomeAutor = new ArrayList<>();
 
     private boolean clienteDefinido;

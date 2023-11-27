@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import Dropzone from "react-dropzone";
 import "../index.css";
 import { useAuth } from "../context/AuthContext";
+import { ProcessoDetailsModal } from "../components/modal/SelectedProcess";
 
 export function ProcessosPage() {
   const [profileData, setProfileData] = useState<IProfile | null>();
@@ -23,29 +24,11 @@ export function ProcessosPage() {
   const [modalDelete, setModalDelete] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   //const [existProc, setExistProc] = useState(false);
-  //const [processos, setProcessos] = useState<IProcesso[]>([]);
-  const [processos, setProcessos] = useState<IProcesso[]>([
-    {
-      id: 1,
-      numProcesso: "2023-001",
-      status: "Em Andamento",
-      dataAtualizacao: "2023-11-27",
-      descricao: "Descrição do Processo 1",
-      nomeReu: [ "Erick Goulardt"],
-      nomeAutor: ["João Guilherme"],
-    },
-    {
-      id: 2,
-      numProcesso: "2023-002",
-      status: "Concluído",
-      dataAtualizacao: "2023-11-28",
-      descricao: "Descrição do Processo 2",
-      nomeReu: ["Fabrica de Carro LTDA" ],
-      nomeAutor: [" Paulo Marquinhos"],
-    },
-  ]);
+  const [selectedProcess, setSelectedProcess] = useState<IProcesso | null>(
+    null
+  );
+  const [processos, setProcessos] = useState<IProcesso[]>([]);
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
   const [modalManual, setModalManual] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const navigate = useNavigate();
@@ -54,6 +37,10 @@ export function ProcessosPage() {
 
   const handleCadastrarProcesso = () => {
     setModalCadastro(!modalCadastro);
+  };
+
+  const handleShowProc = (processo: IProcesso) => {
+    setSelectedProcess(processo);
   };
 
   const [formData, setFormData] = useState({
@@ -75,7 +62,7 @@ export function ProcessosPage() {
         console.error("Erro ao carregar clientes", error);
       }
     };
-   // setExistProc(true)
+    // setExistProc(true)
     loadProcessos();
   }, [user.user?.id, processos.values]);
 
@@ -113,10 +100,6 @@ export function ProcessosPage() {
   const handleDeleteModal = () => {
     setModalDelete(!modalDelete);
     setModal(!modal);
-  };
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
   };
 
   const handleEditModal = () => {
@@ -221,22 +204,15 @@ export function ProcessosPage() {
           >
             Inserir Arquivo
           </button>
-          <input
-            type="text"
-            placeholder="Pesquisar cliente..."
-            value={searchTerm}
-            onChange={handleSearch}
-            className="border rounded-xl h-10 p-1"
-          />
         </div>
       </div>
-          <ProcessoList
-            processos={Array.isArray(processos) ? processos : []}
-            onEditClick={() => console.log("gu")}
-            onDeleteClick={() => console.log("gu")}
-            onEmailClick={() => console.log("gu")}
-            searchTerm={searchTerm}
-          />
+      <ProcessoList
+        processos={Array.isArray(processos) ? processos : []}
+        onViewClick={handleShowProc}
+        onDeleteClick={() => console.log("gu")}
+        onSendDescClick={() => console.log("gu")}
+        onSetClienteClick={() => console.log("gu")}
+      />
       <Footer />
       {modal && (
         <div className="modal">
@@ -400,17 +376,21 @@ export function ProcessosPage() {
           </div>
         </div>
       )}
-       {modalCadastro && (
+      {modalCadastro && (
         <div className="modal">
           <div className="modal-content">
             <div className="button-form">
-              <button onClick={console.log}>
-                Cadastrar Processo
-              </button>
+              <button onClick={console.log}>Cadastrar Processo</button>
               <button onClick={console.log}>Cancelar</button>
             </div>
           </div>
         </div>
+      )}
+      {selectedProcess && (
+        <ProcessoDetailsModal
+          processo={selectedProcess}
+          onClose={() => setSelectedProcess(null)}
+        />
       )}
     </>
   );

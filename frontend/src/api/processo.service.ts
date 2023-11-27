@@ -1,19 +1,23 @@
 import { API } from "../api/Api";
 
+interface Reu {
+  nome: string;
+}
+
+interface Autor {
+  nome: string;
+}
+
 export interface IProcesso {
   id: number;
   numProcesso: string;
   status: string;
+  classe: string;
+  assunto: string;
   dataAtualizacao: string;
   descricao: string;
-  nomeReu: string[];
-  nomeAutor: string[];
-}
-
-export interface IManualProcesso {
-  advogado: object,
-
-
+  nomeReu: Reu[];
+  nomeAutor: Autor[];
 }
 
 export async function retornaProcessos(id: number) {
@@ -39,5 +43,3 @@ export async function cadastrarProcessosEmBloco(file: File, id: number) {
       return null;
     }
   }
-
-  //export async function cadastrarProcessoManual()

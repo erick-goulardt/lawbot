@@ -308,7 +308,7 @@ export function ClientesPage() {
     };
 
     loadClientes();
-  }, [clienteData, clientes.length, user.user?.id]);
+  }, [clientes, clientes.length, user.user?.id]);
 
   const handleDeleteCliente = async (id: number) => {
     try {

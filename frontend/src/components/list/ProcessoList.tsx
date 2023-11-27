@@ -1,42 +1,57 @@
-import Email from "../../assets/mail.png";
+import Lupa from "../../assets/lupa.png";
 import Trash from "../../assets/trash-bin.png";
-import Edit from "../../assets/pen.png";
+import Email from "../../assets/mail.png";
+import Plus from "../../assets/adicionar-usuario.png";
 import { useState } from "react";
 import "../list/List.style.css";
 
-export interface Processo {
+interface Reu {
+  nome: string;
+}
+
+interface Autor {
+  nome: string;
+}
+
+interface Processo {
   id: number;
   numProcesso: string;
   status: string;
+  classe: string,
+  assunto: string;
   dataAtualizacao: string;
   descricao: string;
-  nomeReu: string[];
-  nomeAutor: string[];
+  nomeReu: Reu[];
+  nomeAutor: Autor[];
 }
 
 interface ProcessoListProps {
   processos: Processo[];
-  onEditClick: () => void;
-  onDeleteClick: () => void;
-  onEmailClick: () => void;
-  searchTerm: string;
+  onViewClick: (processo: Processo) => void;
+  onDeleteClick: (id: number) => void;
+  onSetClienteClick: (processo: Processo) => void;
+  onSendDescClick: (processo: Processo) => void;
 }
 
 export function ProcessoList({
   processos,
-  onEditClick,
+  onViewClick,
   onDeleteClick,
-  onEmailClick,
+  onSetClienteClick,
+  onSendDescClick,
 }: ProcessoListProps) {
-  console.log("processos:", processos);
   const [currentPage, setCurrentPage] = useState(1);
   const processosPerPage = 10;
 
   const indexOfLastProcesso = currentPage * processosPerPage;
   const indexOfFirstProcesso = indexOfLastProcesso - processosPerPage;
 
-  const currentProcessos = processos.slice(indexOfFirstProcesso, indexOfLastProcesso);
-  const totalPages = Math.ceil(currentProcessos.length / processosPerPage);
+  const currentProcessos = processos.slice(
+    indexOfFirstProcesso,
+    indexOfLastProcesso
+  );
+
+  const totalPages = Math.ceil(processos.length / processosPerPage);
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
@@ -57,8 +72,8 @@ export function ProcessoList({
   };
 
   return (
-    <div>
-      <ul className="w-5/6 h-auto border-2 rounded-xl m-auto border-blue-400 flex justify-around text-center flex-col font-breeSerif overflow-y-auto scroll-smooth mb-44">
+    <div className="overflow-y-auto">
+      <ul className="w-5/6 h-auto border-2 rounded-xl m-auto border-blue-400 flex justify-around text-center flex-col font-breeSerif scroll-smooth mb-44">
         {currentProcessos.map((processo) => (
           <li
             key={processo.id}
@@ -67,22 +82,18 @@ export function ProcessoList({
             <div className="w-1/5 mt-1">{processo.numProcesso}</div>
             <div className="w-1/5 mt-1">{processo.dataAtualizacao}</div>
             <div className="w-1/5 mt-1">{processo.status}</div>
-            <div className="w-1/5 mt-1">{processo.nomeAutor}</div>
-            <div className="w-1/5 mt-1">{processo.nomeReu}</div>
+            <div className="w-1/5 mt-1">{processo.nomeAutor.map((autor) => autor.nome).join()}</div>
             <div className="flex mr-5">
-              <button onClick={() => onEditClick()}>
+              <button onClick={() => onViewClick(processo)}>
                 <img
                   width="35"
                   className="mb-1"
                   height="35"
-                  src={Edit}
+                  src={Lupa}
                   alt="external-Edit-vkontakte-others-inmotus-design"
                 />
               </button>
-              <button
-                className="ml-1"
-                onClick={() => onDeleteClick()}
-              >
+              <button className="ml-1" onClick={() => onDeleteClick(processo.id)}>
                 <img
                   width="35"
                   height="35"
@@ -91,7 +102,7 @@ export function ProcessoList({
                   alt="filled-trash"
                 />
               </button>
-              <button className="ml-1" onClick={() => onEmailClick()}>
+              <button className="ml-1" onClick={() => onSendDescClick(processo)}>
                 <img
                   width="33"
                   height="33"
@@ -100,10 +111,19 @@ export function ProcessoList({
                   className="mb-1"
                 />
               </button>
+              <button className="ml-1" onClick={() => onSetClienteClick(processo)}>
+                <img
+                  width="33"
+                  height="33"
+                  src={Plus}
+                  alt="new-post"
+                  className="mb-1"
+                />
+              </button>
             </div>
           </li>
         ))}
-        <div className="flex justify-center mt-4">{renderPageNumbers()}</div>
+        <div className="flex justify-center w-full mt-4">{renderPageNumbers()}</div>
       </ul>
     </div>
   );

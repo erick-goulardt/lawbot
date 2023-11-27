@@ -1,0 +1,16 @@
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  position: fixed; /* Change from absolute to fixed */
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  z-index: 1000; /* Ensure the footer is above other elements */
+}
+
+footer p {
+  margin: 0;
+}

@@ -3,6 +3,8 @@ package com.ifsul.lawbot.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.ifsul.lawbot.dto.utils.TokenRequest;
 import com.ifsul.lawbot.entities.Advogado;
 import com.ifsul.lawbot.entities.Cliente;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,36 +14,40 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import static com.ifsul.lawbot.services.CriptografiaService.decriptar;
+
 @Service
 public class TokenService {
 
     @Value("${api.security.token.secret}")
     private String secret;
-    public String gerarToken(Cliente usuario){
+
+    public TokenRequest gerarToken(Advogado usuario){
         try {
+            var username = decriptar(usuario.getUsername(), usuario.getChave().getChavePrivada());
             var algoritmo = Algorithm.HMAC256(secret);
-            return JWT.create()
+            var token = JWT.create()
                     .withIssuer("Lawbot")
-                    .withSubject(usuario.getUsername())
-                    .withClaim("id", usuario.getId())
+                    .withSubject(username)
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
+            var id = usuario.getId();
+            return new TokenRequest(token, id);
         } catch (JWTCreationException exception){
             throw new RuntimeException("erro ao gerar token jwt", exception);
         }
     }
-
-    public String gerarToken(Advogado usuario){
-        try {
+    public String getSubject(String token){
+        try{
             var algoritmo = Algorithm.HMAC256(secret);
-            return JWT.create()
+            return JWT.require(algoritmo)
                     .withIssuer("Lawbot")
-                    .withSubject(usuario.getUsername())
-                    .withClaim("id", usuario.getId())
-                    .withExpiresAt(dataExpiracao())
-                    .sign(algoritmo);
-        } catch (JWTCreationException exception){
-            throw new RuntimeException("erro ao gerar token jwt", exception);
+                    .build()
+                    .verify(token)
+                    .getSubject();
+
+        }catch (JWTVerificationException exception){
+            throw new RuntimeException("Token JWT inválido ou expirado");
         }
     }
 

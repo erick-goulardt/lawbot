@@ -35,11 +35,11 @@ public class CriptografiaService {
             byte[] decodedBytes = Base64.getDecoder().decode(ciphertext);
             byte[] decryptedBytes = cipher.doFinal(decodedBytes);
             return new String(decryptedBytes);
-        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException |
-                 IllegalBlockSizeException | BadPaddingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
+
     }
 
 }

@@ -1,18 +1,12 @@
 package com.ifsul.lawbot.entities;
 
+import ch.qos.logback.core.net.server.Client;
 import com.ifsul.lawbot.dto.advogado.CadastrarAdvogadoRequest;
 import com.ifsul.lawbot.dto.advogado.DetalharAdvogadoRequest;
-import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
-import io.swagger.annotations.ApiModelProperty;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 @Getter
 @Setter
@@ -20,9 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "advogado")
-@Builder
 public class Advogado extends Usuario {
 
+     @ManyToMany(mappedBy = "advogados")
+     private List<Cliente> clientes = new ArrayList<>();
 
      @OneToMany(mappedBy = "advogado")
      private List<Processo> processos;

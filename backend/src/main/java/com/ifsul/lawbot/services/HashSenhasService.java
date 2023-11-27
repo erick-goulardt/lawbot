@@ -13,4 +13,8 @@ public class HashSenhasService {
         String hashedSenha = BCrypt.hashpw(senha, salt);
         return hashedSenha;
     }
+
+    public static boolean verificaCliente(String senhaFornecida, String senhaHashArmazenada){
+        return BCrypt.checkpw(senhaFornecida, senhaHashArmazenada);
+    }
 }

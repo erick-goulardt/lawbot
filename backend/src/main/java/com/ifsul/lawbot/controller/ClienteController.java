@@ -1,11 +1,8 @@
 package com.ifsul.lawbot.controller;
 
-import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
-import com.ifsul.lawbot.dto.cliente.DetalharClienteRequest;
-import com.ifsul.lawbot.dto.cliente.EditarClienteRequest;
-import com.ifsul.lawbot.dto.cliente.ListarClienteRequest;
+import com.ifsul.lawbot.dto.auth.AutenticarRequest;
+import com.ifsul.lawbot.dto.cliente.*;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
-import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.services.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +21,9 @@ public class ClienteController {
 
     @PostMapping("/cadastro")
     @Transactional
-    public MessageDTO cadastrarCliente(@RequestBody @Valid CadastrarClienteRequest dados){
-        return service.encriptarCliente(dados);
+    public ResponseEntity<MessageDTO> cadastrarCliente(@RequestBody @Valid CadastrarClienteRequest dados){
+        var response = service.cadastrarCliente(dados);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response.mensagem()));
     }
 
     @GetMapping("/buscarTodos")
@@ -37,8 +35,8 @@ public class ClienteController {
     @PutMapping("/editar/{clienteId}")
     @Transactional
     public ResponseEntity<?> editarCliente(@PathVariable Long clienteId, @RequestBody @Valid EditarClienteRequest dados){
-        Cliente clienteAtualizado = service.editarCliente(clienteId, dados);
-        return ResponseEntity.status(200).body("Cliente atualizado!");
+        var response = service.editarCliente(clienteId, dados);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response.mensagem()));
     }
 
     @DeleteMapping("/{id}")
@@ -50,5 +48,10 @@ public class ClienteController {
     @GetMapping("/{id}")
     public DetalharClienteRequest detalharCliente(@PathVariable Long id){
         return service.detalharCliente(id);
+    }
+
+    @PostMapping("/login")
+    public AutenticacaoClienteResponse loginCliente(@RequestBody @Valid AutenticarRequest dados){
+        return new AutenticacaoClienteResponse(service.logarCliente(dados));
     }
 }

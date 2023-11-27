@@ -1,0 +1,244 @@
+.modal {
+    background: rgba(48, 48, 48, 0.35);
+    margin: auto;
+  }
+  
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+      background-color: #fff;
+      width: 35rem;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      
+  }
+
+  .modal-content-register {
+    background-color: #fff;
+    width: fit-content;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    
+}
+
+
+  .section-input {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+  }
+  
+  .modal-content h4 {
+      margin-bottom: 15px;
+
+  }
+  
+  .modal-title {
+      border-bottom: 1px solid black;
+      margin-bottom: 20px;
+  }
+  
+  .modal button {
+      border: none;
+      padding: 10px;
+      border-radius: 15px;
+      background-color: #0f2f74;
+      color: white;
+      cursor: pointer;
+      width: 230px;
+  }
+
+  .modal {
+    background: rgba(48, 48, 48, 0.35);
+    margin: auto;
+  }
+  
+  .modal-delete {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content-delete {
+      background-color: #fff;
+      width: 340px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      
+  }
+  .modal-content-delete h4 {
+      margin-bottom: 15px;
+      display: flex;
+  }
+  
+  .modal-title-delete {
+      border-bottom: 1px solid black;
+      margin-bottom: 20px;
+  }
+  
+  .modal-delete button {
+      border: none;
+      padding: 10px;
+      border-radius: 15px;
+      background-color: #c8c9ca;
+      color: rgb(0, 0, 0);
+      cursor: pointer;
+      width: 140px;
+      margin-left: 8px;
+      font-family: 'Bree Serif', serif;
+  }
+
+  .modal-delete button:nth-child(1):hover {
+    background-color: rgb(172, 212, 172);
+  }
+
+  .modal-delete button:nth-child(2):hover {
+    background-color: rgb(240, 159, 145);
+  }
+
+  .modal-edit {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content-edit {
+      background-color: #fff;
+      width: 340px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      
+  }
+  .modal-content-edit h4 {
+      margin-bottom: 15px;
+      display: flex;
+  }
+  
+  .modal-title-edit {
+      border-bottom: 1px solid black;
+      margin-bottom: 20px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+  }
+  
+  .modal-edit button {
+      border: none;
+      padding: 6px;
+      border-radius: 15px;
+      background-color: #c8c9ca;
+      color: rgb(0, 0, 0);
+      cursor: pointer;
+      width: 140px;
+      margin-left: 8px;
+      font-family: 'Bree Serif', serif;
+  }
+
+  .modal-edit button:nth-child(1):hover {
+    background-color: rgb(172, 212, 172);
+  }
+
+  .modal-edit button:nth-child(2):hover {
+    background-color: rgb(240, 159, 145);
+  }
+
+  .modal-input-edit {
+    border-top: black solid 1px;
+    padding-top: 20px;
+  }
+
+  .modal-auto {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content-auto {
+      background-color: #fff;
+      width: auto;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      
+  }
+  .modal-content-auto h4 {
+      margin-bottom: 15px;
+      display: flex;
+  }
+  
+  .modal-title-auto {
+      border-bottom: 1px solid black;
+      margin-bottom: 20px;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+  }
+  
+  .modal-auto button {
+      border: none;
+      padding: 6px;
+      border-radius: 15px;
+      background-color: #c8c9ca;
+      color: rgb(0, 0, 0);
+      cursor: pointer;
+      width: 140px;
+      margin-left: 8px;
+      font-family: 'Bree Serif', serif;
+  }
+
+  .modal-auto button:nth-child(1):hover {
+    background-color: rgb(172, 212, 172);
+  }
+
+  .modal-auto button:nth-child(2):hover {
+    background-color: rgb(240, 159, 145);
+  }
+
+  .modal-input-auto {
+    border-top: black solid 1px;
+    padding-top: 20px;
+  }
+
+  .modal-input-register {
+    border-top: black solid 1px;
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .modal-input-register button {
+    width: 100%;
+    margin-left: -2px;
+  }

@@ -1,12 +1,12 @@
 package com.ifsul.lawbot.entities;
 
 import com.ifsul.lawbot.dto.cliente.CadastrarClienteRequest;
-import com.ifsul.lawbot.services.GerarChaveService;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,8 +16,15 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "cliente")
-@Builder
 public class Cliente extends Usuario{
+
+    @ManyToMany
+    @JoinTable(
+            name = "cliente_advogado",
+            joinColumns = @JoinColumn(name = "cliente_id"),
+            inverseJoinColumns = @JoinColumn(name = "advogado_id")
+    )
+    private List<Advogado> advogados = new ArrayList<>();
 
     @OneToMany(mappedBy = "cliente")
     private List<Processo> processos;
@@ -43,4 +50,10 @@ public class Cliente extends Usuario{
         this.setChave(cliente.getChave());
     }
 
+    public List<Processo> getProcessos() {
+        if(processos == null){
+            processos = new ArrayList<>();
+        }
+        return processos;
+    }
 }

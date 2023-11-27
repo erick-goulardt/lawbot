@@ -5,9 +5,10 @@ import com.ifsul.lawbot.entities.Cliente;
 public record ListarClienteRequest(
         Long id,
         String nome,
-        String email
+        String email,
+        String cpf
 ) {
     public ListarClienteRequest(Cliente cliente){
-        this(cliente.getId(), cliente.getNome(), cliente.getEmail());
+        this(cliente.getId(), cliente.getNome(), cliente.getEmail(), cliente.getCpf());
     }
 }

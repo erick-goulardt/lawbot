@@ -1,14 +1,13 @@
 package com.ifsul.lawbot.controller;
 
-<<<<<<< HEAD
 import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
 import com.ifsul.lawbot.dto.processo.*;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.Reu;
-=======
+
 import com.ifsul.lawbot.dto.processo.*;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
->>>>>>> ec77320d04d4626f44382f8269338ec5de53ac2d
+
 import com.ifsul.lawbot.services.ProcessoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

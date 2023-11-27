@@ -4,6 +4,7 @@ import com.ifsul.lawbot.entities.*;
 
 import javax.print.attribute.standard.ReferenceUriSchemesSupported;
 import java.time.LocalDate;
+import java.util.List;
 
 public record CadastrarProcessoRequest(
         Advogado advogado,

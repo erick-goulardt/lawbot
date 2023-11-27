@@ -120,6 +120,8 @@ public class ProcessoService {
         p.setId(processo.getId());
         p.setDataAtualizacao(processo.getDataAtualizacao());
         p.setNumeroProcesso(decriptar(processo.getNumeroProcesso(), chaveProcesso));
+        p.setAssunto(decriptar(processo.getAssunto(), chaveProcesso));
+        p.setClasse(decriptar(processo.getClasse(), chaveProcesso));
         p.setUltimoEvento(decriptar(processo.getUltimoEvento(), chaveProcesso));
         p.setAdvogado(descriptografarAdvogado(processo.getAdvogado()));
         p.setCliente(descriptografarCliente(processo.getCliente()));

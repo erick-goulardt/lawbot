@@ -13,11 +13,13 @@ public record ListarProcessosRequest(
         String status,
         LocalDate dataAtualizacao,
         String descricao,
+        String assunto,
+        String classe,
         List<ListarReusRequest> nomeReu,
         List<ListarAutoresRequest> nomeAutor
 ) {
     public ListarProcessosRequest(Processo processo) {
-        this(processo.getId(), processo.getNumeroProcesso(), processo.getUltimoEvento(), processo.getDataAtualizacao(), processo.getDescricao(), processo.getNomeReu().stream().map(ListarReusRequest::new).toList(), processo.getNomeAutor().stream().map(ListarAutoresRequest::new).toList());
+        this(processo.getId(), processo.getNumeroProcesso(), processo.getUltimoEvento(), processo.getDataAtualizacao(), processo.getDescricao(), processo.getAssunto(), processo.getClasse(), processo.getNomeReu().stream().map(ListarReusRequest::new).toList(), processo.getNomeAutor().stream().map(ListarAutoresRequest::new).toList());
     }
 
 }

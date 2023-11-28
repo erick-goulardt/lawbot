@@ -57,5 +57,8 @@ public class Processo {
     private List<Autor> nomeAutor = new ArrayList<>();
 
     private boolean clienteDefinido;
+
+    @OneToMany(mappedBy = "processo", cascade = CascadeType.ALL)
+    private List<Historico> historico = new ArrayList<>();
 }
 

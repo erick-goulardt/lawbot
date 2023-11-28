@@ -1,18 +1,19 @@
 package com.ifsul.lawbot.repositories;
 
-import com.ifsul.lawbot.entities.Cliente;
 import com.ifsul.lawbot.entities.Processo;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProcessoRepository extends JpaRepository<Processo, Long> {
     List<Processo> findAllByAdvogado_Id(Long id);
 
     List<Processo> findAllByCliente_Id(Long id);
 
-    Processo findByNumeroProcesso(String numeroProcesso);
+    Optional<Processo> findByNumeroProcesso(String numeroProcesso);
+
+    Optional<Processo> findById(Long id);
 
 //    @Query("SELECT c FROM Cliente c " +
 //            "JOIN Processo p ON c.id = p.cliente_id " +

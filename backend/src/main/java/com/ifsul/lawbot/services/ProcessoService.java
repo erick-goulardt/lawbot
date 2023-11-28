@@ -6,6 +6,7 @@ import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.*;
 import com.ifsul.lawbot.repositories.AdvogadoRepository;
 import com.ifsul.lawbot.repositories.ClienteRepository;
+import com.ifsul.lawbot.repositories.HistoricoRepository;
 import com.ifsul.lawbot.repositories.ProcessoRepository;
 import com.ifsul.lawbot.util.ProcessoExcel;
 import com.ifsul.lawbot.util.ValidaDados;
@@ -44,6 +45,8 @@ public class ProcessoService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Autowired
+    private HistoricoRepository historicoRepository;
     public Processo cadastra(CadastrarProcessoRequest dados, Cliente cliente, Advogado advogado){
         Processo processo = new Processo();
         Chave key = gerarChaveService.findKey();
@@ -265,7 +268,7 @@ public class ProcessoService {
         }
         if( dados.ultimoEvento() != null){
             processo.setUltimoEvento(encriptar(dados.ultimoEvento(), processo.getChave().getChavePublica()));
-            processo.setDataAtualizacao(LocalDate.now());
+            processo.setDataAtualizacao(dados.dataAtualizacao());
         }
 
         processoRepository.save(processo);
@@ -276,5 +279,14 @@ public class ProcessoService {
         var processo = processoRepository.getReferenceById(id);
         processoRepository.delete(processo);
         return new MensagemResponse("Processo deletado!", 200);
+    }
+
+    public void editaHistorico(Processo processo){
+        Historico historico = new Historico(processo);
+        Processo p = processo;
+
+        historicoRepository.save(historico);
+
+        p.getHistorico().add(historico);
     }
 }

@@ -19,9 +19,11 @@ public class Historico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(columnDefinition = "LONGTEXT")
-
     private String ultimaAtualizacao;
     private LocalDate dataAtualizacao;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String descricao;
     @ManyToOne
     @JoinColumn(name = "processo_id")
     private Processo processo;
@@ -29,6 +31,7 @@ public class Historico {
     public Historico(Processo processo){
         this.dataAtualizacao = processo.getDataAtualizacao();
         this.ultimaAtualizacao = processo.getUltimoEvento();
+        this.descricao = processo.getDescricao();
         this.processo = processo;
     }
 }

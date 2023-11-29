@@ -1,5 +1,6 @@
 package com.ifsul.lawbot.services;
 
+import com.ifsul.lawbot.dto.historico.ListarHistoricoResponse;
 import com.ifsul.lawbot.dto.processo.*;
 import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.PrivateKey;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,11 +52,16 @@ public class ProcessoService {
     private HistoricoRepository historicoRepository;
 
     public Processo cadastra(CadastrarProcessoRequest dados, Cliente cliente, Advogado advogado){
-        Processo processo = new Processo();
-        Reu reu = dados.nomeReu();
-        Autor autor = dados.nomeAutor();
-
         Chave key = gerarChaveService.findKey();
+
+        Processo processo = new Processo();
+
+        Reu reu = dados.nomeReu();
+        reu.setNome(encriptar(dados.nomeReu().getNome(), key.getChavePublica()));
+
+        Autor autor = dados.nomeAutor();
+        autor.setNome(encriptar(dados.nomeAutor().getNome(), key.getChavePublica()));
+
         processo.setAdvogado(advogado);
         processo.setCliente(cliente);
         processo.setUltimoEvento(encriptar(dados.ultimoEvento(), key.getChavePublica()));
@@ -88,6 +93,16 @@ public class ProcessoService {
         Processo processo = cadastra(dados, cliente, advogado);
         advogado.getProcessos().add(processo);
         processoRepository.save(processo);
+
+        Historico historico = new Historico(processo);
+
+        processo.getHistorico().add(historico);
+        advogado.getProcessos().add(processo);
+        cliente.getProcessos().add(processo);
+        advogado.getClientes().add(cliente);
+        cliente.getAdvogados().add(advogado);
+
+        historicoRepository.save(historico);
         return new MessageDTO("Processo cadastrado!");
     }
 
@@ -306,5 +321,24 @@ public class ProcessoService {
         historicoRepository.save(historico);
 
         p.getHistorico().add(historico);
+    }
+
+    public List<ListarHistoricoResponse> listaHistoricoPorProcesso(Long id){
+        var processo = processoRepository.getReferenceById(id);
+        return processo.getHistorico().stream()
+                .map(this::decriptarHistorico)
+                .map(ListarHistoricoResponse::new)
+                .toList();
+    }
+
+    public Historico decriptarHistorico(Historico historico){
+        var h = new Historico();
+        h.setId(historico.getId());
+        h.setProcesso(descriptografarProcesso(historico.getProcesso()));
+        h.setDataAtualizacao(historico.getDataAtualizacao());
+        h.setDescricao(decriptar(historico.getDescricao(), historico.getProcesso().getChave().getChavePrivada()));
+        h.setUltimaAtualizacao(decriptar(historico.getUltimaAtualizacao(), historico.getProcesso().getChave().getChavePrivada()));
+
+        return h;
     }
 }

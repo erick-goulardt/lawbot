@@ -1,10 +1,6 @@
 package com.ifsul.lawbot.controller;
 
-import com.ifsul.lawbot.dto.advogado.EditarAdvogadoRequest;
-import com.ifsul.lawbot.dto.processo.*;
-import com.ifsul.lawbot.dto.utils.MessageDTO;
-import com.ifsul.lawbot.entities.Reu;
-
+import com.ifsul.lawbot.dto.historico.ListarHistoricoResponse;
 import com.ifsul.lawbot.dto.processo.*;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 
@@ -87,5 +83,11 @@ public class ProcessoController {
     public ResponseEntity<MessageDTO> deletaProcesso(@PathVariable Long id){
         var response = service.deletarProcesso(id);
         return ResponseEntity.status(response.status()).body(new MessageDTO(response));
+    }
+
+    @GetMapping("/historico/{id}")
+    public List<ListarHistoricoResponse> listarHistorico(@PathVariable Long id){
+        var response = service.listaHistoricoPorProcesso(id);
+        return response;
     }
 }

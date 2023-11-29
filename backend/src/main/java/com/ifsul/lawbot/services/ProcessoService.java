@@ -4,10 +4,7 @@ import com.ifsul.lawbot.dto.processo.*;
 import com.ifsul.lawbot.dto.utils.MensagemResponse;
 import com.ifsul.lawbot.dto.utils.MessageDTO;
 import com.ifsul.lawbot.entities.*;
-import com.ifsul.lawbot.repositories.AdvogadoRepository;
-import com.ifsul.lawbot.repositories.ClienteRepository;
-import com.ifsul.lawbot.repositories.HistoricoRepository;
-import com.ifsul.lawbot.repositories.ProcessoRepository;
+import com.ifsul.lawbot.repositories.*;
 import com.ifsul.lawbot.util.ProcessoExcel;
 import com.ifsul.lawbot.util.ValidaDados;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,6 +23,12 @@ import static com.ifsul.lawbot.services.CriptografiaService.encriptar;
 
 @Service
 public class ProcessoService {
+
+    @Autowired
+    private AutorRepository autorRepository;
+
+    @Autowired
+    private ReuRepository reuRepository;
 
     @Autowired
     private ValidaDados valida;
@@ -47,8 +50,12 @@ public class ProcessoService {
 
     @Autowired
     private HistoricoRepository historicoRepository;
+
     public Processo cadastra(CadastrarProcessoRequest dados, Cliente cliente, Advogado advogado){
         Processo processo = new Processo();
+        Reu reu = dados.nomeReu();
+        Autor autor = dados.nomeAutor();
+
         Chave key = gerarChaveService.findKey();
         processo.setAdvogado(advogado);
         processo.setCliente(cliente);
@@ -59,10 +66,14 @@ public class ProcessoService {
         processo.setClasse(encriptar(dados.classe(), key.getChavePublica()));
         processo.setLocalidade(encriptar(dados.localidade(), key.getChavePublica()));
         processo.setAssunto(encriptar(dados.assunto(), key.getChavePublica()));
-        processo.getNomeAutor().add(dados.nomeAutor());
-        processo.getNomeReu().add(dados.nomeReu());
+        processo.getNomeAutor().add(autor);
+        processo.getNomeReu().add(reu);
         processo.setChave(key);
 
+        reu.setProcesso(processo);
+        autor.setProcesso(processo);
+        reuRepository.save(reu);
+        autorRepository.save(autor);
         return processo;
     }
 
@@ -101,10 +112,15 @@ public class ProcessoService {
 
         Processo processo = cadastra(dados, encriptado, advogado);
         processoRepository.save(processo);
+        Historico historico = new Historico(processo);
+
+        processo.getHistorico().add(historico);
         advogado.getProcessos().add(processo);
         encriptado.getProcessos().add(processo);
         advogado.getClientes().add(encriptado);
         encriptado.getAdvogados().add(advogado);
+
+        historicoRepository.save(historico);
         return new MensagemResponse("Processo cadastrado!", 200);
     }
 
@@ -269,6 +285,8 @@ public class ProcessoService {
         if( dados.ultimoEvento() != null){
             processo.setUltimoEvento(encriptar(dados.ultimoEvento(), processo.getChave().getChavePublica()));
             processo.setDataAtualizacao(dados.dataAtualizacao());
+            Historico historico = new Historico(processo);
+            historicoRepository.save(historico);
         }
 
         processoRepository.save(processo);

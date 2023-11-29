@@ -141,10 +141,14 @@ public class ProcessoService {
 
     public List<ListarProcessosRequest> listarProcessos(){
         List<Processo> processos = processoRepository.findAll();
-        return processos.stream()
-                .map(this::descriptografarProcesso)
-                .map(ListarProcessosRequest::new)
-                .collect(Collectors.toList());
+        try{
+            return processos.stream()
+                    .map(this::descriptografarProcesso)
+                    .map(ListarProcessosRequest::new)
+                    .collect(Collectors.toList());
+        }catch(NullPointerException ex){
+            return null;
+        }
     }
 
     private Processo descriptografarProcesso(Processo processo){
@@ -153,7 +157,11 @@ public class ProcessoService {
 
         p.setId(processo.getId());
         p.setDataAtualizacao(processo.getDataAtualizacao());
-        p.setDescricao(decriptar(processo.getDescricao(), chaveProcesso));
+        try{
+            p.setDescricao(decriptar(processo.getDescricao(), chaveProcesso));
+        } catch(NullPointerException ex){
+            p.setDescricao(null);
+        }
         p.setNumeroProcesso(decriptar(processo.getNumeroProcesso(), chaveProcesso));
         p.setAssunto(decriptar(processo.getAssunto(), chaveProcesso));
         p.setClasse(decriptar(processo.getClasse(), chaveProcesso));
@@ -200,18 +208,26 @@ public class ProcessoService {
 
     public List<ListarProcessosRequest> listarPeloAdvogado(Long id){
         List<Processo> processos = processoRepository.findAllByAdvogado_Id(id);
-        return processos.stream()
-                .map(this::descriptografarProcesso)
-                .map(ListarProcessosRequest::new)
-                .collect(Collectors.toList());
+        try{
+            return processos.stream()
+                    .map(this::descriptografarProcesso)
+                    .map(ListarProcessosRequest::new)
+                    .collect(Collectors.toList());
+        }catch(NullPointerException ex){
+            return null;
+        }
     }
 
     public List<ListarProcessosRequest> listarPeloCliente(Long id){
         List<Processo> processos = processoRepository.findAllByCliente_Id(id);
-        return processos.stream()
-                .map(this::descriptografarProcesso)
-                .map(ListarProcessosRequest::new)
-                .collect(Collectors.toList());
+        try{
+            return processos.stream()
+                    .map(this::descriptografarProcesso)
+                    .map(ListarProcessosRequest::new)
+                    .collect(Collectors.toList());
+        }catch(NullPointerException ex){
+            return null;
+        }
     }
 
     public Cliente cadastrarCliente(Cliente c) {
@@ -289,18 +305,29 @@ public class ProcessoService {
     public MensagemResponse atualizarProcesso(Long id, EditarProcessoRequest dados){
         var processo = processoRepository.getReferenceById(id);
 
+        boolean verificaMudanca = false;
+        
         var cliente = clienteRepository.getReferenceById(dados.cliente().getId());
+        
+        Historico historico = null;
 
+        
         if ( dados.cliente().getId() != null) {
             processo.setCliente(cliente);
         }
         if( dados.descricao() != null){
             processo.setDescricao(encriptar(dados.descricao(), processo.getChave().getChavePublica()));
+            historico = new Historico(processo);
+            verificaMudanca = true;
         }
         if( dados.ultimoEvento() != null){
             processo.setUltimoEvento(encriptar(dados.ultimoEvento(), processo.getChave().getChavePublica()));
             processo.setDataAtualizacao(dados.dataAtualizacao());
-            Historico historico = new Historico(processo);
+            historico = new Historico(processo);
+            verificaMudanca = true;
+        }
+        
+        if(verificaMudanca){
             historicoRepository.save(historico);
         }
 
@@ -325,10 +352,14 @@ public class ProcessoService {
 
     public List<ListarHistoricoResponse> listaHistoricoPorProcesso(Long id){
         var processo = processoRepository.getReferenceById(id);
-        return processo.getHistorico().stream()
-                .map(this::decriptarHistorico)
-                .map(ListarHistoricoResponse::new)
-                .toList();
+        try{
+            return processo.getHistorico().stream()
+                    .map(this::decriptarHistorico)
+                    .map(ListarHistoricoResponse::new)
+                    .toList();
+        } catch(NullPointerException ex){
+            return null;
+        }
     }
 
     public Historico decriptarHistorico(Historico historico){

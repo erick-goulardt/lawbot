@@ -10,4 +10,6 @@ public interface HistoricoRepository extends JpaRepository<Historico, Long> {
     List<Historico> findByProcesso_Id(Long id);
 
     List<Historico> findByProcesso_IdOrderByDataAtualizacaoDesc(Long id);
+
+    List<Historico> findByProcesso_IdOrderByIdDesc(Long id);
 }

@@ -36,7 +36,6 @@ public class CriptografiaService {
             byte[] decryptedBytes = cipher.doFinal(decodedBytes);
             return new String(decryptedBytes);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
 

@@ -142,7 +142,6 @@ public class ProcessoExcel {
             }
 
             for (Processo value : processos) {
-                value.setClienteDefinido(false);
                 value.setAdvogado(advogado);
                 advogado.getProcessos().add(value);
 
@@ -155,9 +154,8 @@ public class ProcessoExcel {
                     historico.setProcesso(pro); // Usamos o processo existente
                     historico.setDataAtualizacao(value.getDataAtualizacao());
                     historico.setUltimaAtualizacao(value.getUltimoEvento());
-
+                    historico.setDescricao(pro.getDescricao());
                     if(verificaHistorico(historico, pro)){
-                        System.out.println("Editou!");
 
                         historicoRepository.save(historico);
 
@@ -175,6 +173,7 @@ public class ProcessoExcel {
                     historico.setProcesso(value);
                     historico.setDataAtualizacao(value.getDataAtualizacao());
                     historico.setUltimaAtualizacao(value.getUltimoEvento());
+                    historico.setDescricao(value.getDescricao());
                     historicoRepository.save(historico);
                 }
             }
@@ -204,7 +203,7 @@ public class ProcessoExcel {
     }
 
     private boolean verificaHistorico(Historico historico, Processo processo){
-        List<Historico> historicos = historicoRepository.findByProcesso_IdOrderByDataAtualizacaoDesc(processo.getId());
+        List<Historico> historicos = historicoRepository.findByProcesso_IdOrderByIdDesc(processo.getId());
 
         var t1 = decriptar(historicos.get(0).getUltimaAtualizacao(), processo.getChave().getChavePrivada());
         var t2 = decriptar(historico.getUltimaAtualizacao(), processo.getChave().getChavePrivada());

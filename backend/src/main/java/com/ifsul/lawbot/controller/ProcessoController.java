@@ -105,4 +105,16 @@ public class ProcessoController {
         var response = service.defineDescricao(dados);
         return ResponseEntity.status(response.status()).body(new MessageDTO(response));
     }
+
+    @GetMapping("/semCliente")
+    public List<ListarProcessosRequest> listarProcessoSemCliente(@RequestBody ListarProcessoSemOuComClienteRequest dados){
+        var response = service.listarProcessoSemCliente(dados);
+        return response;
+    }
+
+    @GetMapping("/comCliente")
+    public List<ListarProcessosRequest> listarProcessoComCliente(@RequestBody ListarProcessoSemOuComClienteRequest dados){
+        var response = service.listarProcessoComCliente(dados);
+        return response;
+    }
 }

@@ -397,4 +397,23 @@ public class ProcessoService {
 
         return new MensagemResponse("Mensagem definida com sucesso!", 200);
     }
+
+    public List<ListarProcessosRequest> listarProcessoSemCliente(ListarProcessoSemOuComClienteRequest dados){
+        List<Processo> processos = processoRepository.findByAdvogadoIdAndClienteIdIsNull(dados.advogado().getId());
+
+        return processos.stream()
+                .map(this::descriptografarProcesso)
+                .map(ListarProcessosRequest::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<ListarProcessosRequest> listarProcessoComCliente(ListarProcessoSemOuComClienteRequest dados){
+        List<Processo> processos = processoRepository.findByAdvogadoIdAndClienteIdIsNotNull(dados.advogado().getId());
+
+        return processos.stream()
+                .map(this::descriptografarProcesso)
+                .map(ListarProcessosRequest::new)
+                .collect(Collectors.toList());
+    }
+
 }

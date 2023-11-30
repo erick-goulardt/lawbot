@@ -392,6 +392,9 @@ public class ProcessoService {
         processo.setDescricao(encriptar(dados.descricao(), processo.getChave().getChavePublica()));
         processoRepository.save(processo);
 
+        Historico historico = new Historico(processo);
+        historicoRepository.save(historico);
+
         return new MensagemResponse("Mensagem definida com sucesso!", 200);
     }
 }

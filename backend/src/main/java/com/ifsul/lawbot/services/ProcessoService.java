@@ -372,4 +372,26 @@ public class ProcessoService {
 
         return h;
     }
+
+    public MensagemResponse defineCliente(DefinirClienteRequest dados) {
+        var p = processoRepository.getReferenceById(dados.processo().getId());
+
+        var c = clienteRepository.getReferenceById(dados.id());
+
+        p.setCliente(c);
+        processoRepository.save(p);
+
+        c.getProcessos().add(p);
+
+        return new MensagemResponse("Cliente definido com sucesso!", 200);
+    }
+
+    public MensagemResponse defineDescricao(DefinirDescricaoRequest dados) {
+        var processo = processoRepository.getReferenceById(dados.processo().getId());
+
+        processo.setDescricao(encriptar(dados.descricao(), processo.getChave().getChavePublica()));
+        processoRepository.save(processo);
+
+        return new MensagemResponse("Mensagem definida com sucesso!", 200);
+    }
 }

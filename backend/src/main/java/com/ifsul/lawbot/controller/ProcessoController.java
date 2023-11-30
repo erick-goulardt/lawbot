@@ -87,7 +87,22 @@ public class ProcessoController {
 
     @GetMapping("/historico/{id}")
     public List<ListarHistoricoResponse> listarHistorico(@PathVariable Long id){
+        System.out.println();
         var response = service.listaHistoricoPorProcesso(id);
         return response;
+    }
+
+    @PutMapping("/definir-cliente")
+    @Transactional
+    public ResponseEntity<MessageDTO> definirCliente(@RequestBody DefinirClienteRequest dados){
+        var response = service.defineCliente(dados);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response));
+    }
+
+    @PutMapping("/definir-descricao")
+    @Transactional
+    public ResponseEntity<MessageDTO> definirDescricao(@RequestBody DefinirDescricaoRequest dados){
+        var response = service.defineDescricao(dados);
+        return ResponseEntity.status(response.status()).body(new MessageDTO(response));
     }
 }

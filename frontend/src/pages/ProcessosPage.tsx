@@ -13,7 +13,6 @@ import {
   registrarProcessoManual,
   setDescricaoProc,
 } from "../api/processo.service";
-import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { useNavigate } from "react-router-dom";
 import Dropzone from "react-dropzone";
 import "../index.css";
@@ -23,7 +22,6 @@ import CustomModal from "../components/modal/ChooseClienteModal";
 import { IProcesso, IProfile } from "../types/Types";
 
 export function ProcessosPage() {
-  const [isActive, setIsActive] = useState(false);
   const [profileData, setProfileData] = useState<IProfile | null>();
   const user = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -105,7 +103,6 @@ export function ProcessosPage() {
       );
     } catch (error) {
       console.error("Register failed", error);
-      console.log(registroProc);
     }
     handleModalCadastro();
   };
@@ -266,12 +263,10 @@ export function ProcessosPage() {
       try {
         await cadastrarProcessosEmBloco(uploadedFile, user.user.id);
         setModalManual(false);
-        setIsActive(true);
       } catch (error) {
         console.error("Erro ao enviar arquivo:", error);
       }
     }
-    setIsActive(false);
   };
 
   useEffect(() => {
@@ -515,11 +510,6 @@ export function ProcessosPage() {
         </div>
       )}
       {modalManual && (
-        <LoadingOverlayWrapper
-          active={isActive}
-          spinner
-          text="Validando o arquivo..."
-        >
           <div className="modal-overlay">
             <div className="modal-content">
               <div className="flex flex-col items-center justify-center">
@@ -581,7 +571,6 @@ export function ProcessosPage() {
               </div>
             </div>
           </div>
-        </LoadingOverlayWrapper>
       )}
       {selectedProcess && (
         <ProcessoDetailsModal

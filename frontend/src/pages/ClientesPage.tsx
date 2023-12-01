@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  IProfile,
   getClientesFromAdvogado,
   getProfile,
   updateProfile,
@@ -19,7 +18,8 @@ import {
   editCliente,
   registerCliente,
 } from "../api/cliente.service";
-import { Cliente, ClienteList } from "../components/list/List";
+import { ClienteList } from "../components/list/List";
+import { Cliente, IProfile } from "../types/Types";
 
 export function ClientesPage() {
   const [profileData, setProfileData] = useState<IProfile | null>();

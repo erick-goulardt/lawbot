@@ -8,7 +8,7 @@ interface AuthContextType {
 }
 
 interface User {
-  id: number;
+  id: number ;
   token: string;
 }
 

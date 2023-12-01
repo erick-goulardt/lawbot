@@ -3,15 +3,7 @@ import Trash from "../../assets/trash-bin.png";
 import Edit from "../../assets/pen.png";
 import { useState } from "react";
 import "../list/List.style.css"
-
-
-
-export interface Cliente {
-  id: number;
-  nome: string;
-  email: string;
-  cpf: string;
-}
+import { Cliente } from "../../types/Types";
 
 interface ClienteListProps {
   clientes: Cliente[];
@@ -111,3 +103,4 @@ export function ClienteList({
     </div>
   );
 }
+

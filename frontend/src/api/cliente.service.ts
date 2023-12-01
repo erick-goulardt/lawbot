@@ -1,11 +1,5 @@
+import { IEditCliente } from "../types/Types";
 import { API } from "./Api";
-
-
-export interface IEditCliente {
-  nome: string,
-  email: string,
-  cpf: string;
-}
 
 export async function registerCliente(idAdvogado: number | undefined, nome: string, email: string, senha: string, cpf: string, dataNascimento: string) {
     try {

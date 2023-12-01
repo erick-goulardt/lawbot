@@ -9,6 +9,7 @@ import com.ifsul.lawbot.repositories.*;
 import com.ifsul.lawbot.util.ProcessoExcel;
 import com.ifsul.lawbot.util.ValidaDados;
 import jakarta.persistence.EntityNotFoundException;
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -398,8 +399,8 @@ public class ProcessoService {
         return new MensagemResponse("Mensagem definida com sucesso!", 200);
     }
 
-    public List<ListarProcessosRequest> listarProcessoSemCliente(ListarProcessoSemOuComClienteRequest dados){
-        List<Processo> processos = processoRepository.findByAdvogadoIdAndClienteIdIsNull(dados.advogado().getId());
+    public List<ListarProcessosRequest> listarProcessoSemCliente(Long idAdvogado){
+        List<Processo> processos = processoRepository.findByAdvogadoIdAndClienteIdIsNull(idAdvogado);
 
         return processos.stream()
                 .map(this::descriptografarProcesso)
@@ -407,8 +408,8 @@ public class ProcessoService {
                 .collect(Collectors.toList());
     }
 
-    public List<ListarProcessosRequest> listarProcessoComCliente(ListarProcessoSemOuComClienteRequest dados){
-        List<Processo> processos = processoRepository.findByAdvogadoIdAndClienteIdIsNotNull(dados.advogado().getId());
+    public List<ListarProcessosRequest> listarProcessoComCliente(Long idAdvogado){
+        List<Processo> processos = processoRepository.findByAdvogadoIdAndClienteIdIsNotNull(idAdvogado);
 
         return processos.stream()
                 .map(this::descriptografarProcesso)

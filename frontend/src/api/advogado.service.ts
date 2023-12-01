@@ -1,19 +1,5 @@
+import { IProfile, IEditProfile } from "../types/Types";
 import { API } from "./Api";
-
-export interface IProfile {
-    id: number,
-    nome: string,
-    email: string,
-    oab: string,
-    cpf: string,
-    dataNascimento: string
-}
-
-export interface IEditProfile {
-  nome: string,
-  email: string,
-  senha: string;
-}
 
 export async function getProfile(id: number): Promise<IProfile | null> {
     try {
@@ -45,7 +31,7 @@ export async function updateProfile(id: number, request: IEditProfile) {
   }
 }
 
-export async function getClientesFromAdvogado(id: number) {
+export async function getClientesFromAdvogado(id: number | undefined) {
   try {
     const response = await API.get(`/advogado/listarClientes/${id}`)
     return response;
@@ -54,3 +40,4 @@ export async function getClientesFromAdvogado(id: number) {
     console.log("Não houve retorno!")
   }
 }
+

@@ -106,15 +106,15 @@ public class ProcessoController {
         return ResponseEntity.status(response.status()).body(new MessageDTO(response));
     }
 
-    @GetMapping("/semCliente")
-    public List<ListarProcessosRequest> listarProcessoSemCliente(@RequestBody ListarProcessoSemOuComClienteRequest dados){
-        var response = service.listarProcessoSemCliente(dados);
+    @GetMapping("/semCliente/{idAdvogado}")
+    public List<ListarProcessosRequest> listarProcessoSemCliente(@PathVariable Long idAdvogado){
+        var response = service.listarProcessoSemCliente(idAdvogado);
         return response;
     }
 
-    @GetMapping("/comCliente")
-    public List<ListarProcessosRequest> listarProcessoComCliente(@RequestBody ListarProcessoSemOuComClienteRequest dados){
-        var response = service.listarProcessoComCliente(dados);
+    @GetMapping("/comCliente/{idAdvogado}")
+    public List<ListarProcessosRequest> listarProcessoComCliente(@PathVariable Long idAdvogado){
+        var response = service.listarProcessoComCliente(idAdvogado);
         return response;
     }
 }

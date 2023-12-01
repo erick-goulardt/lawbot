@@ -30,7 +30,6 @@ export function ClientesPage() {
   const [modalEdit, setModalEdit] = useState(false);
   const navigate = useNavigate();
   const [modalManual, setModalManual] = useState(false);
-  const [existList, setExistList] = useState(false);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [editClienteModal, setEditClienteModal] = useState(false);
@@ -299,7 +298,6 @@ export function ClientesPage() {
           const response = await getClientesFromAdvogado(user.user.id);
           if (response) {
             setClientes(response.data);
-            setExistList(true);
           }
         }
       } catch (error) {
@@ -387,7 +385,7 @@ export function ClientesPage() {
           />
         </div>
       </div>
-      {existList ? (
+      {clientes.length > 0 ? (
         <>
           <ClienteList
             clientes={clientes}

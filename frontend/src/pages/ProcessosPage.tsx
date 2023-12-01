@@ -13,6 +13,7 @@ import {
   registrarProcessoManual,
   setDescricaoProc,
 } from "../api/processo.service";
+import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { useNavigate } from "react-router-dom";
 import Dropzone from "react-dropzone";
 import "../index.css";
@@ -22,6 +23,7 @@ import CustomModal from "../components/modal/ChooseClienteModal";
 import { IProcesso, IProfile } from "../types/Types";
 
 export function ProcessosPage() {
+  const [isActive, setIsActive] = useState(false);
   const [profileData, setProfileData] = useState<IProfile | null>();
   const user = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -46,6 +48,7 @@ export function ProcessosPage() {
   const [historicModal, setHistoricModal] = useState<IProcesso[] | null>([]);
   const [modalCadastraProc, setModalCadastraProc] = useState(false);
   const [registroProc, setRegistroProc] = useState({
+    idAdvogado: profileData?.id,
     ultimoEvento: "",
     dataAtualizacao: "",
     descricao: "",
@@ -53,12 +56,8 @@ export function ProcessosPage() {
     classe: "",
     localidade: "",
     assunto: "",
-    nomeReu: {
-      nome: "",
-    },
-    nomeAutor: {
-      nome: "",
-    },
+    nomeReu: "",
+    nomeAutor: ""
   });
 
   const handleShowHistoricoModal = (processo: IProcesso[]) => {
@@ -74,6 +73,7 @@ export function ProcessosPage() {
   const resetFormProc = () => {
     if (modalManual === false) {
       setRegistroProc({
+        idAdvogado: profileData?.id,
         ultimoEvento: "",
         dataAtualizacao: "",
         descricao: "",
@@ -81,12 +81,8 @@ export function ProcessosPage() {
         classe: "",
         localidade: "",
         assunto: "",
-        nomeReu: {
-          nome: "",
-        },
-        nomeAutor: {
-          nome: "",
-        },
+        nomeReu: "",
+        nomeAutor: ""
       });
     }
   };
@@ -104,15 +100,15 @@ export function ProcessosPage() {
         registroProc.classe,
         registroProc.localidade,
         registroProc.assunto,
-        registroProc.nomeReu.nome,
-        registroProc.nomeAutor.nome
+        registroProc.nomeReu,
+        registroProc.nomeAutor
       );
     } catch (error) {
       console.error("Register failed", error);
+      console.log(registroProc);
     }
     handleModalCadastro();
   };
-
 
   const handleRegisterProc = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -171,8 +167,8 @@ export function ProcessosPage() {
           let response;
           if (isClicked == true) {
             response = await getProcessoComCliente(user.user.id);
-          } 
-          
+          }
+
           if (isClicked == false) {
             response = await getProcessoSemCliente(user.user.id);
           }
@@ -270,10 +266,12 @@ export function ProcessosPage() {
       try {
         await cadastrarProcessosEmBloco(uploadedFile, user.user.id);
         setModalManual(false);
+        setIsActive(true);
       } catch (error) {
         console.error("Erro ao enviar arquivo:", error);
       }
     }
+    setIsActive(false);
   };
 
   useEffect(() => {
@@ -342,16 +340,15 @@ export function ProcessosPage() {
           </div>
         </div>
       </div>
-      <ul className="w-5/6 h-auto border-2 rounded-xl m-auto border-blue-400 flex justify-around text-center font-breeSerif scroll-smooth mb-10">
-        <div className="w-1/5 mt-1">N° Processo</div>
-        <div className="w-1/5 mt-1">Data Atualização</div>
-        <div className="w-1/5 mt-1">Status</div>
-        <div className="w-1/5 mt-1">Autores</div>
-        <div className="w-1/5 mt-1 mr-36">Reus</div>
-      </ul>
-
-      {processos ? (
+      {processos.length > 0 ? (
         <>
+          <ul className="w-5/6 h-auto border-2 rounded-xl m-auto border-blue-400 flex justify-around text-center font-breeSerif scroll-smooth mb-10">
+            <div className="w-1/5 mt-1">N° Processo</div>
+            <div className="w-1/5 mt-1">Data Atualização</div>
+            <div className="w-1/5 mt-1">Status</div>
+            <div className="w-1/5 mt-1">Autores</div>
+            <div className="w-1/5 mt-1 mr-36">Reus</div>
+          </ul>
           <ProcessoList
             processos={Array.isArray(processos) ? processos : []}
             onViewClick={handleShowProc}
@@ -370,7 +367,7 @@ export function ProcessosPage() {
         <div className="w-5/6 h-96 border-2 rounded-xl m-auto border-blue-400 flex justify-center items-center">
           <div>
             <h1 className="font-breeSerif text-4xl">
-              Nenhum cliente cadastrado ainda!
+              Nenhum processo cadastrado ainda!
             </h1>
           </div>
         </div>
@@ -518,40 +515,73 @@ export function ProcessosPage() {
         </div>
       )}
       {modalManual && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="flex flex-col items-center justify-center">
-              <div
-                className="close-button flex justify-start w-full"
-                onClick={() => setModalManual(false)}
-              >
-                <p className="cursor-pointer">X</p>
-                <h4 className="modal-title-text text-center text-1xl ml-5 pb-5">
-                  Inserir Arquivo
-                </h4>
-              </div>
-              <Dropzone onDrop={onDrop}>
-                {({ getRootProps, getInputProps }) => (
-                  <div {...getRootProps()} className="dropzone">
-                    <input {...getInputProps()} />
-                    <p className="dropzone-text text-xl text-center cursor-pointer">
-                      Arraste e solte um arquivo aqui, ou clique para selecionar
-                      um arquivo
-                    </p>
+        <LoadingOverlayWrapper
+          active={isActive}
+          spinner
+          text="Validando o arquivo..."
+        >
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="flex flex-col items-center justify-center">
+                <div
+                  className="close-button flex justify-start w-full"
+                  onClick={() => setModalManual(false)}
+                >
+                  <p className="cursor-pointer">X</p>
+                  <h4 className="modal-title-text text-center text-1xl ml-5 pb-5">
+                    {uploadedFile ? "Enviar Arquivo" : "Inserir Arquivo"}
+                  </h4>
+                </div>
+                {uploadedFile ? (
+                  <Dropzone onDrop={onDrop} disabled>
+                    {({ getRootProps, getInputProps }) => (
+                      <div {...getRootProps()} className="dropzone">
+                        <input {...getInputProps()} />
+                        <p className="font-breeSerif text-xl">
+                          {uploadedFile
+                            ? "Clique no botão abaixo para enviar"
+                            : "Arraste e solte um arquivo aqui, ou clique para selecionar um arquivo"}
+                        </p>
+                      </div>
+                    )}
+                  </Dropzone>
+                ) : (
+                  <Dropzone onDrop={onDrop}>
+                    {({ getRootProps, getInputProps }) => (
+                      <div {...getRootProps()} className="dropzone">
+                        <input {...getInputProps()} />
+                        <p className="font-breeSerif text-xl">
+                          {uploadedFile
+                            ? "Clique no botão abaixo para enviar"
+                            : "Arraste e solte um arquivo aqui, ou clique para selecionar um arquivo"}
+                        </p>
+                      </div>
+                    )}
+                  </Dropzone>
+                )}
+                {uploadedFile ? (
+                  <div className="button-form">
+                    <button
+                      className="button-arquivo -mb-6"
+                      onClick={handleFileUpload}
+                    >
+                      Enviar Arquivo
+                    </button>
+                  </div>
+                ) : (
+                  <div className="button-form">
+                    <button
+                      className="button-arquivo -mb-6"
+                      onClick={handleFileUpload}
+                    >
+                      Enviar Arquivo
+                    </button>
                   </div>
                 )}
-              </Dropzone>
-              <div className="button-form">
-                <button
-                  className="button-arquivo -mb-6"
-                  onClick={handleFileUpload}
-                >
-                  Enviar Arquivo
-                </button>
               </div>
             </div>
           </div>
-        </div>
+        </LoadingOverlayWrapper>
       )}
       {selectedProcess && (
         <ProcessoDetailsModal
@@ -708,7 +738,7 @@ export function ProcessosPage() {
                 />
                 <Input
                   label={"Nome do Réu"}
-                  value={registroProc.nomeReu.nome}
+                  value={registroProc.nomeReu}
                   onChange={handleRegisterProc}
                   placeholder={"Réu"}
                   className={
@@ -719,7 +749,7 @@ export function ProcessosPage() {
                 />
                 <Input
                   label={"Nome do Autor"}
-                  value={registroProc.nomeAutor.nome}
+                  value={registroProc.nomeAutor}
                   onChange={handleRegisterProc}
                   placeholder={"Autor"}
                   className={

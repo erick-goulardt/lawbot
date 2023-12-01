@@ -16,7 +16,7 @@ public record CadastrarProcessoRequest(
         String classe,
         String localidade,
         String assunto,
-        Reu nomeReu,
-        Autor nomeAutor
+        String nomeReu,
+        String nomeAutor
 ) {
 }

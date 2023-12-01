@@ -72,14 +72,13 @@ public class ProcessoService {
 
         Processo processo = new Processo();
 
-        Reu reu = dados.nomeReu();
-        System.out.println("nome: " + dados.nomeReu().getNome());
+        Reu reu = new Reu(dados.nomeReu());
         if(reu.getNome() != null){
-            reu.setNome(encriptar(dados.nomeReu().getNome(), key.getChavePublica()));
+            reu.setNome(encriptar(dados.nomeReu(), key.getChavePublica()));
         }
 
-        Autor autor = dados.nomeAutor();
-        autor.setNome(encriptar(dados.nomeAutor().getNome(), key.getChavePublica()));
+        Autor autor = new Autor(dados.nomeAutor());
+        autor.setNome(encriptar(dados.nomeAutor(), key.getChavePublica()));
 
         processo.setAdvogado(a);
         processo.setCliente(c);

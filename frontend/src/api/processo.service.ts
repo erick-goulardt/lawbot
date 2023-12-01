@@ -1,5 +1,5 @@
 import { API } from "../api/Api";
-import { Autor, IDefineCliente, IDefineDescricao, Reu } from "../types/Types";
+import { IDefineCliente, IDefineDescricao } from "../types/Types";
 
 export async function retornaProcessos(id: number) {
   try {
@@ -75,13 +75,12 @@ export async function cadastrarProcessosEmBloco(file: File, id: number) {
     }
   }
 
-  export async function registrarProcessoManual(idAdvogado: number | undefined, idCliente: number,
+  export async function registrarProcessoManual(idAdvogado: number | undefined,
     ultimoEvento: string, dataAtualizacao: string, descricao: string, numeroProcesso: string,
-    classe: string, localidade: string, assunto: string, nomeReu: Reu, nomeAutor: Autor) {
+    classe: string, localidade: string, assunto: string, nomeReu: string, nomeAutor: string) {
     try {
-      await API.post(`/processo/cadastro`), 
-      { idAdvogado, idCliente, ultimoEvento, dataAtualizacao, descricao, numeroProcesso, classe, localidade, assunto, nomeReu, nomeAutor }
-      console.log("Cadastrou!");
+      const data = await API.post(`/processo/cadastro`, { idAdvogado, ultimoEvento, dataAtualizacao, descricao, numeroProcesso, classe, localidade, assunto, nomeReu, nomeAutor })
+      return console.log(data);
     } catch (error) {
       console.error("Erro no cadastro!");
     }

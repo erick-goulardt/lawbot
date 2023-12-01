@@ -17,11 +17,10 @@
   
   .modal-content {
       background-color: #fff;
-      width: 35rem;
+      width: max-content;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      
   }
 
   .modal-content-register {

@@ -29,7 +29,7 @@ interface ProcessoListProps {
   processos: Processo[];
   onViewClick: (processo: Processo) => void;
   onSetClienteClick?: (processo: Processo) => void;
-  onShowHistorico: (processo: Processo) => void;
+  onShowHistorico: (processo: Processo[]) => void;
   onEmailClick?: (processo: Processo) => void;
   showAddClientIcon?: boolean;
 }
@@ -96,7 +96,7 @@ export function ProcessoList({
             <div className="w-1/5 mt-1">{processo.nomeAutor.map((autor) => autor.nome).join()}</div>
             <div className="w-1/5 mt-1">{processo.nomeReu.map((autor) => autor.nome).join()}</div>
             <div className="flex mr-5">
-              <button className="mr-1" onClick={() => onShowHistorico(processo)}>
+              <button className="mr-1" onClick={() => onShowHistorico([processo])}>
                 <img
                   width="33"
                   height="33"

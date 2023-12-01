@@ -17,7 +17,7 @@ export function HomePage() {
           <h1 className="motto font-breeSerif text-7xl w-96 mt-12">
             O ESPÍRITO DO NEGÓCIO
           </h1>
-          <p className="font-lightInter text-lg w-5/12 mt-14">
+          <p className="font-lightInter text-lg w-7/12 mt-14">
             Tempo é dinheiro, e dinheiro é tempo. Sabendo disso, nossa empresa
             desenvolveu uma plataforma capaz de auxiliar e otimizar todo tempo e
             tarefas rotineiras dentro de seu escritório jurídico voltado para a

@@ -43,7 +43,7 @@ export function ProcessosPage() {
   const [isAddClientModalOpen, setAddClientModalOpen] = useState(false);
   const [emailContent, setEmailContent] = useState("");
   const [isHistoricoModalOpen, setHistoricoModalOpen] = useState(false);
-  const [historicModal, setHistoricModal] = useState<IProcesso | null>();
+  const [historicModal, setHistoricModal] = useState<IProcesso[] | null>([]);
   const [modalCadastraProc, setModalCadastraProc] = useState(false);
   const [registroProc, setRegistroProc] = useState({
     ultimoEvento: "",
@@ -61,7 +61,7 @@ export function ProcessosPage() {
     },
   });
 
-  const handleShowHistoricoModal = (processo: IProcesso) => {
+  const handleShowHistoricoModal = (processo: IProcesso[]) => {
     setHistoricModal(processo);
     setHistoricoModalOpen(true);
   };
@@ -96,8 +96,7 @@ export function ProcessosPage() {
 
     try {
       await registrarProcessoManual(
-        user.user?.id,
-        0,
+        profileData?.id,
         registroProc.ultimoEvento,
         registroProc.dataAtualizacao,
         registroProc.descricao,
@@ -105,14 +104,15 @@ export function ProcessosPage() {
         registroProc.classe,
         registroProc.localidade,
         registroProc.assunto,
-        registroProc.nomeReu,
-        registroProc.nomeAutor
+        registroProc.nomeReu.nome,
+        registroProc.nomeAutor.nome
       );
     } catch (error) {
       console.error("Register failed", error);
     }
     handleModalCadastro();
   };
+
 
   const handleRegisterProc = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -169,9 +169,11 @@ export function ProcessosPage() {
       try {
         if (user.user?.id) {
           let response;
-          if (isClicked) {
+          if (isClicked == true) {
             response = await getProcessoComCliente(user.user.id);
-          } else {
+          } 
+          
+          if (isClicked == false) {
             response = await getProcessoSemCliente(user.user.id);
           }
           if (response) {
@@ -347,19 +349,32 @@ export function ProcessosPage() {
         <div className="w-1/5 mt-1">Autores</div>
         <div className="w-1/5 mt-1 mr-36">Reus</div>
       </ul>
-      <ProcessoList
-        processos={Array.isArray(processos) ? processos : []}
-        onViewClick={handleShowProc}
-        onSetClienteClick={(processo) => {
-          setAddClientModalOpen(true);
-          setSelectedProcessForModal(processo);
-        }}
-        onShowHistorico={handleShowHistoricoModal}
-        showAddClientIcon={!isClicked}
-        onEmailClick={(processo) => {
-          openEmailModal(processo);
-        }}
-      />
+
+      {processos ? (
+        <>
+          <ProcessoList
+            processos={Array.isArray(processos) ? processos : []}
+            onViewClick={handleShowProc}
+            onSetClienteClick={(processo) => {
+              setAddClientModalOpen(true);
+              setSelectedProcessForModal(processo);
+            }}
+            onShowHistorico={handleShowHistoricoModal}
+            showAddClientIcon={!isClicked}
+            onEmailClick={(processo) => {
+              openEmailModal(processo);
+            }}
+          />
+        </>
+      ) : (
+        <div className="w-5/6 h-96 border-2 rounded-xl m-auto border-blue-400 flex justify-center items-center">
+          <div>
+            <h1 className="font-breeSerif text-4xl">
+              Nenhum cliente cadastrado ainda!
+            </h1>
+          </div>
+        </div>
+      )}
       <CustomModal
         isOpen={isAddClientModalOpen}
         onClose={handleAddClientClick}
@@ -414,22 +429,20 @@ export function ProcessosPage() {
             </div>
             <div className="modal-buttons">
               <div className="modal-input">
-                <div className="section-input mb-3">
-                  <div className="mb-3 ml-10 pl-2">
+                <div className="flex">
+                  <div className="mb-3">
                     <p className="font-breeSerif">Data Nascimento:</p>
                     {profileData?.dataNascimento}
                   </div>
-                  <div className="mb-3 pr-24 mr-4">
+                  <div className="mb-3 ml-3">
                     <p className="font-breeSerif">CPF:</p>
                     {profileData?.cpf}
                   </div>
-                </div>
-                <div className="section-input ml-7">
-                  <div className="mb-3">
+                  <div className="mb-3 ml-3">
                     <p className="font-breeSerif">OAB:</p>
                     {profileData?.oab}
                   </div>
-                  <div className="mb-1 ">
+                  <div className="mb-1 ml-3">
                     <p className="font-breeSerif">Email:</p>
                     {profileData?.email}
                   </div>
@@ -517,7 +530,6 @@ export function ProcessosPage() {
                   Inserir Arquivo
                 </h4>
               </div>
-
               <Dropzone onDrop={onDrop}>
                 {({ getRootProps, getInputProps }) => (
                   <div {...getRootProps()} className="dropzone">
@@ -583,9 +595,15 @@ export function ProcessosPage() {
               Histórico do Processo
             </h2>
             <div className="flex text-center w-full border-b-2 pb-2">
-              <p>{historicModal.descricao}</p>
-              <p className="ml-3">{historicModal.dataAtualizacao}</p>
-              <p className="ml-3">{historicModal.status}</p>
+              {historicModal.map((processo, index) => (
+                <div key={index} className="w-full flex">
+                  <p className="ml-3 font-breeSerif">
+                    {processo.dataAtualizacao}
+                  </p>
+                  <p className="ml-3 font-breeSerif">{processo.status}</p>
+                  <p className="ml-3 font-breeSerif">{processo.descricao}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -650,7 +668,7 @@ export function ProcessosPage() {
                     "mb-5 pb-1 pt-1 border-solid border-2 pl-1 rounded-lg w-56"
                   }
                   type={"text"}
-                  name={"numeroProcessual"}
+                  name={"numeroProcesso"}
                 />
                 <Input
                   label={"Classe Processual"}

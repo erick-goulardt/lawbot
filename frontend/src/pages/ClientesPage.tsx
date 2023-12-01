@@ -214,7 +214,7 @@ export function ClientesPage() {
     e.preventDefault();
 
     const serviceId = "service_oxtseai";
-    const templateId = "template_2yewhov";
+    const templateId = "template_cmondxm";
     const publicKey = "1FLvzQdxnhnrEA9RO";
 
     const templateParams = {
@@ -222,7 +222,7 @@ export function ClientesPage() {
       from_email: profileData?.email,
       to_name: clienteData.nome,
       email_to: clienteData.email,
-      message: `Your email message goes here`,
+      message: emailMessage,
     };
 
     try {
@@ -387,7 +387,6 @@ export function ClientesPage() {
           />
         </div>
       </div>
-
       {existList ? (
         <>
           <ClienteList
@@ -449,22 +448,20 @@ export function ClientesPage() {
             </div>
             <div className="modal-buttons">
               <div className="modal-input">
-                <div className="section-input mb-3">
-                  <div className="mb-3 pl-5">
+                <div className="flex">
+                  <div className="mb-3">
                     <p className="font-breeSerif">Data Nascimento:</p>
                     {profileData?.dataNascimento}
                   </div>
-                  <div className="mb-3 pr-11">
+                  <div className="mb-3 ml-3">
                     <p className="font-breeSerif">CPF:</p>
                     {profileData?.cpf}
                   </div>
-                </div>
-                <div className="section-input">
-                  <div className="mb-3">
+                  <div className="mb-3 ml-3">
                     <p className="font-breeSerif">OAB:</p>
                     {profileData?.oab}
                   </div>
-                  <div className="mb-1">
+                  <div className="mb-1 ml-3">
                     <p className="font-breeSerif">Email:</p>
                     {profileData?.email}
                   </div>

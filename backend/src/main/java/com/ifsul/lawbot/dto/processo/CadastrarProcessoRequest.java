@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record CadastrarProcessoRequest(
-        Advogado advogado,
+        Long idAdvogado,
         Cliente cliente,
         String ultimoEvento,
         LocalDate dataAtualizacao,

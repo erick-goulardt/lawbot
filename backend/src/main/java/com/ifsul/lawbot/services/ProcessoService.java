@@ -73,7 +73,10 @@ public class ProcessoService {
         Processo processo = new Processo();
 
         Reu reu = dados.nomeReu();
-        reu.setNome(encriptar(dados.nomeReu().getNome(), key.getChavePublica()));
+        System.out.println("nome: " + dados.nomeReu().getNome());
+        if(reu.getNome() != null){
+            reu.setNome(encriptar(dados.nomeReu().getNome(), key.getChavePublica()));
+        }
 
         Autor autor = dados.nomeAutor();
         autor.setNome(encriptar(dados.nomeAutor().getNome(), key.getChavePublica()));
@@ -109,8 +112,8 @@ public class ProcessoService {
             cliente = null;
         }
 
-        Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " + dados.advogado().getId()));
+        Advogado advogado = advogadoRepository.findById(dados.idAdvogado())
+                .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " + dados.idAdvogado()));
 
 
         Processo processo = cadastra(dados, cliente, advogado);
@@ -134,10 +137,10 @@ public class ProcessoService {
     public MensagemResponse cadastrarProcessoComClienteNovo(CadastrarProcessoRequest dados){
         Chave key = gerarChaveService.findKey();
 
-        if(valida.emailCliente(dados.cliente().getEmail(), dados.advogado().getId())){
+        if(valida.emailCliente(dados.cliente().getEmail(), dados.idAdvogado())){
             return new MensagemResponse("Email já cadastrado!", 409);
         }
-        if(valida.CPFCliente(dados.cliente().getCpf(), dados.advogado().getId())){
+        if(valida.CPFCliente(dados.cliente().getCpf(), dados.idAdvogado())){
             return new MensagemResponse("CPF já cadastrado!", 409);
         }
         Cliente cliente = new Cliente(dados.cliente());
@@ -146,9 +149,9 @@ public class ProcessoService {
         Cliente encriptado = new Cliente(cadastrarCliente(cliente));
         clienteRepository.save(encriptado);
 
-        Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
+        Advogado advogado = advogadoRepository.findById(dados.idAdvogado())
                 .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " +
-                        dados.advogado().getId()));
+                        dados.idAdvogado()));
 
         Processo processo = cadastra(dados, encriptado, advogado);
         processoRepository.save(processo);

@@ -53,6 +53,21 @@ public class ProcessoService {
     private HistoricoRepository historicoRepository;
 
     public Processo cadastra(CadastrarProcessoRequest dados, Cliente cliente, Advogado advogado){
+        Cliente c = null;
+
+        try {
+            if (cliente != null && cliente.getId() != null) {
+                c = clienteRepository.getReferenceById(cliente.getId());
+            }
+        } catch (NullPointerException ex) {
+            // Log ou tratar a exceção de acordo com a necessidade
+            ex.printStackTrace();
+            // Pode lançar a exceção novamente ou retornar um valor padrão, dependendo da lógica desejada
+            throw ex;
+        }
+
+        var a = advogadoRepository.getReferenceById(advogado.getId());
+
         Chave key = gerarChaveService.findKey();
 
         Processo processo = new Processo();
@@ -63,8 +78,9 @@ public class ProcessoService {
         Autor autor = dados.nomeAutor();
         autor.setNome(encriptar(dados.nomeAutor().getNome(), key.getChavePublica()));
 
-        processo.setAdvogado(advogado);
-        processo.setCliente(cliente);
+        processo.setAdvogado(a);
+        processo.setCliente(c);
+
         processo.setUltimoEvento(encriptar(dados.ultimoEvento(), key.getChavePublica()));
         processo.setDataAtualizacao(dados.dataAtualizacao());
         processo.setDescricao(encriptar(dados.descricao(), key.getChavePublica()));
@@ -85,11 +101,17 @@ public class ProcessoService {
 
     public MessageDTO cadastrarProcesso(CadastrarProcessoRequest dados){
 
-        Cliente cliente = clienteRepository.findById(dados.cliente().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + dados.cliente().getId()));
+        Cliente cliente;
+        try{
+            cliente = clienteRepository.findById(dados.cliente().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + dados.cliente().getId()));
+        } catch(NullPointerException ex){
+            cliente = null;
+        }
 
         Advogado advogado = advogadoRepository.findById(dados.advogado().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Advogado não encontrado com ID: " + dados.advogado().getId()));
+
 
         Processo processo = cadastra(dados, cliente, advogado);
         advogado.getProcessos().add(processo);
@@ -99,9 +121,11 @@ public class ProcessoService {
 
         processo.getHistorico().add(historico);
         advogado.getProcessos().add(processo);
-        cliente.getProcessos().add(processo);
-        advogado.getClientes().add(cliente);
-        cliente.getAdvogados().add(advogado);
+        if(cliente != null){
+            cliente.getProcessos().add(processo);
+            cliente.getAdvogados().add(advogado);
+            advogado.getClientes().add(cliente);
+        }
 
         historicoRepository.save(historico);
         return new MessageDTO("Processo cadastrado!");

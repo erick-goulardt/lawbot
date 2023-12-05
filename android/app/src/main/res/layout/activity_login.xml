@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_img"
+    tools:context=".activities.LoginActivity"
+    tools:ignore="ExtraText">
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="236dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="44dp"
+        android:width="225dp"
+        android:height="40dp"
+        android:background="@drawable/input_source"
+        android:drawableStart="@drawable/baseline_lock_24"
+        android:drawablePadding="8sp"
+        android:hint="Senha"
+        android:inputType="text|textPassword"
+        android:paddingLeft="8sp"
+        android:textAlignment="textStart"
+        android:textColor="#000000"
+        android:textColorHint="#0E0D0D"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imagehome"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <Button
+        android:id="@+id/buttonloginzao"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:width="225sp"
+        android:background="@drawable/button_shape"
+        android:text="ENTRAR"
+        android:textColor="#FBFBFB"
+        android:textColorHighlight="#142270"
+        android:textColorLink="#0E1643"
+        app:cornerRadius="90sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imagehome"
+        app:rippleColor="#152370"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="92dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="LOGIN"
+        android:textColor="#FFFFFF"
+        android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imagehome"
+        android:layout_width="350dp"
+        android:layout_height="365dp"
+        android:layout_marginTop="44dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/welcome"
+        app:srcCompat="@drawable/imagetest" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="238dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="68dp"
+        android:width="225dp"
+        android:height="40dp"
+        android:background="@drawable/input_source"
+        android:drawableStart="@drawable/baseline_account_circle_24"
+        android:drawablePadding="8sp"
+        android:hint="Email"
+        android:paddingLeft="8sp"
+        android:textAlignment="textStart"
+        android:textColor="#000000"
+        android:textColorHint="#131313"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonloginzao"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

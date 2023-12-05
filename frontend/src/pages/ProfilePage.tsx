@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IProfile, getProfile, updateProfile } from "../api/advogado.service";
+import { getProfile, updateProfile } from "../api/advogado.service";
 import { Navbar } from "../components/nav/Navbar";
 import { useAuth } from "../context/AuthContext";
 import HomePhoto from "../assets/freepik.svg";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import "../components/modal/Modal.style.css";
 import { deleteProfile } from "../api/advogado.service";
 import { Input } from "../components/input/Input";
+import { IProfile } from "../types/Types";
 
 export function ProfilePage() {
   const [profileData, setProfileData] = useState<IProfile | null>();
@@ -185,22 +186,20 @@ export function ProfilePage() {
             </div>
             <div className="modal-buttons">
               <div className="modal-input">
-                <div className="section-input mb-3">
-                  <div className="mb-3 pl-5">
+                <div className="flex">
+                  <div className="mb-3">
                     <p className="font-breeSerif">Data Nascimento:</p>
                     {profileData?.dataNascimento}
                   </div>
-                  <div className="mb-3 pr-11">
+                  <div className="mb-3 ml-3">
                     <p className="font-breeSerif">CPF:</p>
                     {profileData?.cpf}
                   </div>
-                </div>
-                <div className="section-input">
-                  <div className="mb-3">
+                  <div className="mb-3 ml-3">
                     <p className="font-breeSerif">OAB:</p>
                     {profileData?.oab}
                   </div>
-                  <div className="mb-1">
+                  <div className="mb-1 ml-3">
                     <p className="font-breeSerif">Email:</p>
                     {profileData?.email}
                   </div>
